@@ -130,7 +130,7 @@ const Navbar: FC = () => {
             <div className="flex-shrink-0 flex items-center">
               <Link href="/" className="flex items-center">
                 <img 
-                  src="/logo.png" 
+                  src="/logo.PNG" 
                   alt="TGA Handyman Logo" 
                   className={`transition-all duration-300 ${scrolled ? 'h-10 lg:h-12' : 'h-12 lg:h-14'}`}
                 />
