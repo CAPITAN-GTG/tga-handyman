@@ -107,7 +107,7 @@ const Navbar: FC = () => {
   return (
     <div className={`sticky top-0 z-50 w-full ${scrolled ? 'shadow-lg shadow-black/10' : ''} transition-all duration-300`}>
       {/* Top Contact Bar */}
-      <div className="hidden lg:block bg-black/95 text-gray-400 py-1.5 border-b border-gray-800">
+      <div className="hidden lg:block bg-white text-black py-1.5 border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-end items-center gap-6">
             <a href="tel:8185543033" className="flex items-center gap-2 text-sm hover:text-green-400 transition-colors">
@@ -224,7 +224,7 @@ const Navbar: FC = () => {
                             <Menu.Items className="absolute right-0 mt-1 w-72 origin-top-right rounded-lg bg-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                               {/* Interior Services */}
                               <div className="p-2">
-                                <div className="px-3 py-1.5 text-xs font-semibold text-green-400 uppercase tracking-wide">
+                                <div className="px-3 py-1.5 text-sm font-semibold text-green-400 uppercase tracking-wide">
                                   Home & Interior
                                 </div>
                                 {serviceOptions
@@ -251,7 +251,7 @@ const Navbar: FC = () => {
 
                               {/* Kitchen & Bathroom */}
                               <div className="p-2">
-                                <div className="px-3 py-1.5 text-xs font-semibold text-green-400 uppercase tracking-wide">
+                                <div className="px-3 py-1.5 text-sm font-semibold text-green-400 uppercase tracking-wide">
                                   Kitchen & Bathroom
                                 </div>
                                 {serviceOptions
@@ -278,7 +278,7 @@ const Navbar: FC = () => {
 
                               {/* Construction & Additional */}
                               <div className="p-2">
-                                <div className="px-3 py-1.5 text-xs font-semibold text-green-400 uppercase tracking-wide">
+                                <div className="px-3 py-1.5 text-sm font-semibold text-green-400 uppercase tracking-wide">
                                   Construction & More
                                 </div>
                                 {serviceOptions
@@ -394,7 +394,7 @@ const Navbar: FC = () => {
                   <div key={item.name} className="py-1.5">
                     <button
                       onClick={() => toggleMobileDropdown('about')}
-                      className="flex items-center justify-between w-full px-4 py-2.5 text-base font-medium text-gray-300"
+                      className="flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium text-gray-300"
                     >
                       <div className="flex items-center gap-3">
                         <item.icon className="h-5 w-5 flex-shrink-0 text-green-400" />
@@ -435,7 +435,7 @@ const Navbar: FC = () => {
                   <div key={item.name} className="py-1.5">
                     <button
                       onClick={() => toggleMobileDropdown('services')}
-                      className="flex items-center justify-between w-full px-4 py-2.5 text-base font-medium text-gray-300"
+                      className="flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium text-gray-300"
                     >
                       <div className="flex items-center gap-3">
                         <item.icon className="h-5 w-5 flex-shrink-0 text-green-400" />
@@ -459,7 +459,7 @@ const Navbar: FC = () => {
                           
                           return (
                             <div key={category}>
-                              <div className="px-10 pt-3 pb-1 text-xs font-semibold text-green-400 uppercase">
+                              <div className="px-10 pt-3 pb-1 text-sm font-semibold text-green-400 uppercase">
                                 {category === 'interior' ? 'Home & Interior' : 
                                  category === 'kitchen' ? 'Kitchen' :
                                  category === 'bathroom' ? 'Bathroom' :
@@ -496,7 +496,7 @@ const Navbar: FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`
-                      flex items-center gap-3 px-4 py-3.5 text-base font-medium
+                      flex items-center gap-3 px-4 py-3.5 text-sm font-medium
                       ${isCurrentPath(item.href) ? 'bg-green-500 text-white' : 'text-gray-300'}
                     `}
                     onClick={() => setMobileMenuOpen(false)}
@@ -512,7 +512,7 @@ const Navbar: FC = () => {
                   key={item.name}
                   href={item.href}
                   className={`
-                    flex items-center gap-3 px-4 py-3.5 text-base font-medium
+                    flex items-center gap-3 px-4 py-3.5 text-sm font-medium
                     ${isCurrentPath(item.href) ? 'bg-green-500 text-white' : 'text-gray-300'}
                   `}
                   onClick={() => setMobileMenuOpen(false)}
@@ -525,7 +525,7 @@ const Navbar: FC = () => {
             
             {/* Mobile Contact Info */}
             <div className="py-3 px-4 bg-gray-800/50">
-              <p className="text-xs font-semibold text-green-400 uppercase mb-2">Contact Us</p>
+              <p className="text-sm font-semibold text-green-400 uppercase mb-2">Contact Us</p>
               <div className="space-y-2">
                 <a href="tel:8185543033" className="flex items-center gap-3 text-sm text-gray-300">
                   <Phone className="h-4 w-4 text-green-400" />
