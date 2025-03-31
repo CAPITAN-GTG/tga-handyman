@@ -114,25 +114,25 @@ const FrontPage = () => {
           <div className="grid lg:grid-cols-2 gap-12 min-h-screen items-center py-20">
             {/* Hero Content */}
             <div className="space-y-8">
-              <div className="space-y-4">
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white space-y-2">
+              <div className="space-y-6">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white space-y-4">
                   <span className="block">Professional</span>
                   <span className="block text-green-500">Handyman Services</span>
                 </h1>
-                <p className="text-lg sm:text-xl text-gray-300 max-w-lg">
+                <p className="text-lg sm:text-xl text-gray-300 max-w-2xl">
                   Expert craftsmanship and reliable solutions for all your home improvement needs.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/pages/contact-us"
-                  className="inline-flex items-center justify-center bg-green-700 hover:bg-green-800 text-white px-8 py-3 text-base font-medium transition-colors duration-300"
+                  className="inline-flex items-center justify-center bg-green-700 hover:bg-green-800 text-white px-8 py-4 text-lg font-medium transition-colors duration-300 rounded-md"
                 >
                   Get Started
                 </Link>
                 <Link
                   href="/pages/services/home-improve"
-                  className="inline-flex items-center justify-center bg-white hover:bg-gray-100 text-black px-8 py-3 text-base font-medium transition-colors duration-300"
+                  className="inline-flex items-center justify-center bg-white hover:bg-gray-100 text-black px-8 py-4 text-lg font-medium transition-colors duration-300 rounded-md"
                 >
                   Our Services
                 </Link>
@@ -149,10 +149,10 @@ const FrontPage = () => {
                 >
                   <div className="flex flex-col items-center text-center">
                     <service.icon className="h-8 w-8 text-green-500" />
-                    <h3 className="mt-4 text-sm font-medium text-white">{service.title}</h3>
-                    <div className="mt-4 inline-flex items-center text-xs text-green-400 hover:text-green-300 transition-colors duration-300">
+                    <h3 className="mt-4 text-base sm:text-lg font-medium text-white">{service.title}</h3>
+                    <div className="mt-4 inline-flex items-center text-sm text-green-400 hover:text-green-300 transition-colors duration-300">
                       Learn More
-                      <ArrowRight className="ml-2 h-3 w-3" />
+                      <ArrowRight className="ml-2 h-4 w-4" />
                     </div>
                   </div>
                 </div>
