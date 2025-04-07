@@ -97,7 +97,7 @@ const Gallery: React.FC = () => {
           loop
           playsInline
         >
-          <source src="/video.MP4" type="video/mp4" />
+          <source src="/video-compressed.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         
