@@ -1,10 +1,34 @@
 'use client';
 
-import React from 'react';
-import { Star, ExternalLink, MapPin } from 'lucide-react';
+import React, { useState } from 'react';
+import { Star, ExternalLink, MapPin, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
 const Reviews = () => {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  
+  const projectImages = [
+    { src: '/projects-1.jpg', alt: 'TGA Handyman Project 1' },
+    { src: '/projects-2.jpg', alt: 'TGA Handyman Project 2' },
+    { src: '/projects-3.png', alt: 'TGA Handyman Project 3' },
+    { src: '/projects-4.png', alt: 'TGA Handyman Project 4' },
+    { src: '/projects-5.png', alt: 'TGA Handyman Project 5' },
+  ];
+
+  const handlePreviousImage = () => {
+    if (!selectedImage) return;
+    const currentIndex = projectImages.findIndex(img => img.src === selectedImage);
+    const previousIndex = currentIndex === 0 ? projectImages.length - 1 : currentIndex - 1;
+    setSelectedImage(projectImages[previousIndex].src);
+  };
+
+  const handleNextImage = () => {
+    if (!selectedImage) return;
+    const currentIndex = projectImages.findIndex(img => img.src === selectedImage);
+    const nextIndex = currentIndex === projectImages.length - 1 ? 0 : currentIndex + 1;
+    setSelectedImage(projectImages[nextIndex].src);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section with Pattern */}
@@ -62,18 +86,24 @@ const Reviews = () => {
             </div>
           </div>
 
-          {/* Map Section */}
-          <div className="w-full h-[500px] bg-gray-100">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3224.7098530676087!2d-115.1191397!3d36.0741333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c8d0bd693e5389%3A0x6b8f4f6c1a99b882!2s1857%20Citation%20Cir%2C%20Las%20Vegas%2C%20NV%2089123!5e0!3m2!1sen!2sus!4v1710901234567!5m2!1sen!2sus"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="w-full h-full"
-            ></iframe>
+          {/* Project Gallery Section */}
+          <div className="p-8 md:p-12 border-b border-gray-200">
+            <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Our Recent Projects</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              {projectImages.map((image, index) => (
+                <div 
+                  key={index} 
+                  className="relative h-48 overflow-hidden rounded-lg cursor-pointer group"
+                  onClick={() => setSelectedImage(image.src)}
+                >
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -103,6 +133,55 @@ const Reviews = () => {
           </div>
         </div>
       </div>
+
+      {/* Image Preview Modal */}
+      {selectedImage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4">
+          <div className="relative max-w-5xl w-full h-full flex items-center justify-center">
+            <button 
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
+            >
+              <X className="h-8 w-8" />
+            </button>
+            
+            {/* Left Arrow */}
+            <button
+              onClick={handlePreviousImage}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 z-10 hidden md:block"
+            >
+              <ChevronLeft className="h-12 w-12" />
+            </button>
+            
+            {/* Right Arrow */}
+            <button
+              onClick={handleNextImage}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 z-10 hidden md:block"
+            >
+              <ChevronRight className="h-12 w-12" />
+            </button>
+            
+            <div className="relative w-full h-full max-h-[90vh]">
+              <img
+                src={selectedImage}
+                alt="Project Preview"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+              {projectImages.map((image, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedImage(image.src)}
+                  className={`w-3 h-3 rounded-full ${
+                    selectedImage === image.src ? 'bg-white' : 'bg-gray-400'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
