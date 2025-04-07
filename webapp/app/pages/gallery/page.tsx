@@ -21,14 +21,58 @@ const Gallery: React.FC = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
-  const togglePlayPause = () => {
+  // Add useEffect for video initialization
+  React.useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      // Set initial volume
+      video.volume = volume;
+      video.muted = isMuted;
+
+      // Handle initial play
+      const playVideo = async () => {
+        try {
+          await video.play();
+        } catch (error) {
+          console.log("Video autoplay failed:", error);
+          // If autoplay fails, we'll let the user click to play
+          setIsPlaying(false);
+        }
+      };
+
+      playVideo();
+
+      // Add event listeners for better state management
+      video.addEventListener('play', () => setIsPlaying(true));
+      video.addEventListener('pause', () => setIsPlaying(false));
+      video.addEventListener('volumechange', () => {
+        setVolume(video.volume);
+        setIsMuted(video.muted);
+      });
+
+      // Cleanup
+      return () => {
+        video.removeEventListener('play', () => setIsPlaying(true));
+        video.removeEventListener('pause', () => setIsPlaying(false));
+        video.removeEventListener('volumechange', () => {
+          setVolume(video.volume);
+          setIsMuted(video.muted);
+        });
+      };
+    }
+  }, []);
+
+  const togglePlayPause = async () => {
     if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
+      try {
+        if (isPlaying) {
+          await videoRef.current.pause();
+        } else {
+          await videoRef.current.play();
+        }
+      } catch (error) {
+        console.log("Error toggling play/pause:", error);
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
@@ -98,6 +142,7 @@ const Gallery: React.FC = () => {
           playsInline
           muted={false}
           preload="auto"
+          onError={(e) => console.log("Video error:", e)}
         >
           <source src="/video-compressed.mp4" type="video/mp4" />
           Your browser does not support the video tag.
