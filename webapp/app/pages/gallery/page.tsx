@@ -49,10 +49,8 @@ const Gallery: React.FC = () => {
     const handleCanPlay = () => {
       console.log('Video can play');
       setIsVideoLoaded(true);
-      video.play().catch(e => {
-        console.log('Play failed:', e);
-        setVideoError(true);
-      });
+      // Try to play without catching errors here
+      video.play();
     };
 
     const handleLoadedData = () => {
@@ -60,24 +58,52 @@ const Gallery: React.FC = () => {
       setIsVideoLoaded(true);
     };
 
+    const handleLoadStart = () => {
+      console.log('Video load started');
+    };
+
     const handleError = (e: Event) => {
-      console.error('Video error:', e);
+      const videoElement = e.target as HTMLVideoElement;
+      console.error('Video error:', {
+        error: videoElement.error,
+        networkState: videoElement.networkState,
+        readyState: videoElement.readyState,
+        currentSrc: videoElement.currentSrc,
+      });
       setVideoError(true);
     };
 
+    video.addEventListener('loadstart', handleLoadStart);
     video.addEventListener('canplay', handleCanPlay);
     video.addEventListener('loadeddata', handleLoadedData);
     video.addEventListener('error', handleError);
 
-    // Force load the video
-    video.load();
-
     return () => {
+      video.removeEventListener('loadstart', handleLoadStart);
       video.removeEventListener('canplay', handleCanPlay);
       video.removeEventListener('loadeddata', handleLoadedData);
       video.removeEventListener('error', handleError);
     };
   }, []);
+
+  const retryVideo = () => {
+    if (videoRef.current) {
+      const video = videoRef.current;
+      setVideoError(false);
+      setIsVideoLoaded(false);
+      
+      // Force reload the video
+      video.load();
+      
+      // Try playing after a short delay
+      setTimeout(() => {
+        video.play().catch(e => {
+          console.error('Retry play failed:', e);
+          setVideoError(true);
+        });
+      }, 1000);
+    }
+  };
 
   const toggleMute = () => {
     if (videoRef.current) {
@@ -117,17 +143,12 @@ const Gallery: React.FC = () => {
         <div className="relative w-full h-full">
           {videoError ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-white space-y-4">
-              <p className="text-lg">Unable to load video.</p>
+              <p className="text-lg">Unable to load video. Please try again.</p>
               <button
-                onClick={() => {
-                  setVideoError(false);
-                  if (videoRef.current) {
-                    videoRef.current.load();
-                  }
-                }}
+                onClick={retryVideo}
                 className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-md transition-colors"
               >
-                Try Again
+                Retry
               </button>
             </div>
           ) : (
@@ -141,19 +162,12 @@ const Gallery: React.FC = () => {
                   muted={isMuted}
                   loop
                   controls={false}
-                  onError={(e) => {
-                    console.error('Video loading error:', e);
-                    setVideoError(true);
-                  }}
-                  style={{ opacity: isVideoLoaded ? 1 : 0 }}
+                  preload="auto"
+                  poster="/video-poster.png"
                 >
                   <source 
                     src="/video.mp4" 
                     type="video/mp4"
-                    onError={(e) => {
-                      console.error('Source error:', e);
-                      setVideoError(true);
-                    }}
                   />
                   Your browser does not support the video tag.
                 </video>
