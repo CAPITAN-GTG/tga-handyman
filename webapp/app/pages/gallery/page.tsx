@@ -90,17 +90,15 @@ const Gallery: React.FC = () => {
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
       >
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-full bg-gray-900">
           <video
             ref={videoRef}
-            className="w-full h-full object-cover"
+            className="absolute top-0 left-0 w-full h-full object-fill"
             controls
             playsInline
             preload="metadata"
-            autoPlay
-            loop
           >
-            <source src="/video-compressed.mp4" type="video/mp4" />
+            <source src="/video.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>
