@@ -1,6 +1,6 @@
+"use client"
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import LearnMoreButton from './LearnMoreButton';
 
 const Welcome = () => {
   return (
@@ -11,9 +11,9 @@ const Welcome = () => {
           <div className="relative">
             <div className="aspect-w-16 aspect-h-12 overflow-hidden shadow-xl">
               <img
-                src="/electrical.jpg"
+                src="/electrical.png"
                 alt="TGA Handyman Electrical Services"
-                className="object-cover w-full h-full transform hover:scale-105 transition-transform duration-500"
+                className="object-fill w-full h-full transform hover:scale-105 transition-transform duration-500"
               />
             </div>
             {/* Decorative element */}

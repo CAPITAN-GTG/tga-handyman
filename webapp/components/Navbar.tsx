@@ -23,6 +23,7 @@ import {
   AlertTriangle,
   MapPin,
   Phone,
+  Sparkles,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -40,6 +41,7 @@ const serviceOptions = [
   { name: 'Interior Services', href: '/pages/services/interior', icon: PaintBucket, category: 'interior' },
   { name: 'Drywall Repairs', href: '/pages/services/drywall', icon: Paintbrush2, category: 'interior' },
   { name: 'Handyman Services', href: '/pages/services/handyman', icon: Wrench, category: 'interior' },
+  { name: 'Clean Up Services', href: '/pages/services/clean-up', icon: Sparkles, category: 'interior' },
   
   // Kitchen & Bathroom
   { name: 'Kitchen Repairs', href: '/pages/services/kitchen-repairs', icon: Utensils, category: 'kitchen' },

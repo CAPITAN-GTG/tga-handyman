@@ -1,6 +1,6 @@
 "use client";
 
-import { Lightbulb, Wrench, DoorClosed, TreePine, ArrowRight, Droplet, Building2, Home } from 'lucide-react';
+import { Lightbulb, Wrench, DoorClosed, TreePine, ArrowRight, Droplet, Building2, Home, Hammer, HardHat, Ruler, PaintBucket, WrenchIcon, Leaf, Droplets, Construction, Building, HomeIcon, Zap, DoorOpen, Trees } from 'lucide-react';
 import Link from 'next/link';
 import Welcome from '../components/Welcome';
 import Dream from '../components/Dream';
@@ -11,7 +11,7 @@ import { useState } from 'react';
 const services = [
   {
     title: 'Residential Construction',
-    icon: Home,
+    icon: HomeIcon,
     services: [
       'Remodels',
       'Drywall installation',
@@ -24,7 +24,7 @@ const services = [
   },
   {
     title: 'Commercial Construction',
-    icon: Building2,
+    icon: Building,
     services: [
       'Remodels',
       'Drywall installation',
@@ -38,7 +38,7 @@ const services = [
   },
   {
     title: 'Electrical & Lighting',
-    icon: Lightbulb,
+    icon: Zap,
     services: [
       'Minor Electrical',
       'GFCI replacements',
@@ -49,7 +49,7 @@ const services = [
   },
   {
     title: 'General Maintenance',
-    icon: Wrench,
+    icon: WrenchIcon,
     services: [
       'Handyman services',
       'Cleaning interior buildings',
@@ -61,7 +61,7 @@ const services = [
   },
   {
     title: 'Doors & Gates',
-    icon: DoorClosed,
+    icon: DoorOpen,
     services: [
       'Welding repairs',
       'Doors replacement',
@@ -73,7 +73,7 @@ const services = [
   },
   {
     title: 'Landscape Services',
-    icon: TreePine,
+    icon: Trees,
     services: [
       'Landscaping',
       'Tree trimming',
@@ -90,6 +90,18 @@ const services = [
       'Emergency water leaks',
       'Minor plumbing issues',
       'Valve replacements'
+    ]
+  },
+  {
+    title: 'Demolition',
+    icon: Hammer,
+    services: [
+      'Interior demolition',
+      'Exterior demolition',
+      'Debris removal',
+      'Site clearing',
+      'Selective demolition',
+      'Full structure demolition'
     ]
   }
 ];
@@ -141,7 +153,7 @@ const FrontPage = () => {
 
             {/* Service Grid */}
             <div className="grid grid-cols-2 gap-1 bg-white/5 backdrop-blur-sm p-1">
-              {services.slice(0, 6).map((service, index) => (
+              {services.map((service, index) => (
                 <div
                   key={service.title}
                   className="group relative overflow-hidden bg-black/40 p-6 hover:bg-green-900/40 transition-colors duration-300 cursor-pointer"

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Oswald } from "next/font/google";
+import { Open_Sans } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import "./globals.css";
 import Footer from "@/components/Footer";
 
-const oswald = Oswald({
+const openSans = Open_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: 'swap',
@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${oswald.className} antialiased`}>
+      <body className={`${openSans.className} antialiased`}>
         <Navbar />
         {children}
         <Footer />
