@@ -48,6 +48,19 @@ const Gallery: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Video Section */}
+      <div className="relative w-full h-[60vh] bg-black">
+        <video
+          className="w-full h-full object-cover"
+          autoPlay
+          loop
+          playsInline
+        >
+          <source src="/video.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
       {/* Hero Section with Pattern */}
       <div className="relative bg-green-700">
         <div className="absolute inset-0">
