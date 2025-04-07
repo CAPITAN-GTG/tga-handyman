@@ -96,6 +96,8 @@ const Gallery: React.FC = () => {
           autoPlay
           loop
           playsInline
+          muted={false}
+          preload="auto"
         >
           <source src="/video-compressed.mp4" type="video/mp4" />
           Your browser does not support the video tag.
