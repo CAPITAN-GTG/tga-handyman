@@ -49,7 +49,10 @@ const Gallery: React.FC = () => {
     const handleCanPlay = () => {
       console.log('Video can play');
       setIsVideoLoaded(true);
-      video.play().catch(e => console.log('Play failed:', e));
+      video.play().catch(e => {
+        console.log('Play failed:', e);
+        setVideoError(true);
+      });
     };
 
     const handleLoadedData = () => {
@@ -57,13 +60,14 @@ const Gallery: React.FC = () => {
       setIsVideoLoaded(true);
     };
 
-    const handlePlay = () => {
-      console.log('Video playing');
+    const handleError = (e: Event) => {
+      console.error('Video error:', e);
+      setVideoError(true);
     };
 
     video.addEventListener('canplay', handleCanPlay);
     video.addEventListener('loadeddata', handleLoadedData);
-    video.addEventListener('play', handlePlay);
+    video.addEventListener('error', handleError);
 
     // Force load the video
     video.load();
@@ -71,7 +75,7 @@ const Gallery: React.FC = () => {
     return () => {
       video.removeEventListener('canplay', handleCanPlay);
       video.removeEventListener('loadeddata', handleLoadedData);
-      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('error', handleError);
     };
   }, []);
 
@@ -80,11 +84,6 @@ const Gallery: React.FC = () => {
       setIsMuted(!isMuted);
       videoRef.current.muted = !isMuted;
     }
-  };
-
-  const handleVideoError = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
-    console.error('Video loading error:', e);
-    setVideoError(true);
   };
 
   // Organize images into categories with more professional descriptions
@@ -117,8 +116,19 @@ const Gallery: React.FC = () => {
       <div className="relative w-full h-[50vh] md:h-[60vh] lg:h-[70vh] bg-black">
         <div className="relative w-full h-full">
           {videoError ? (
-            <div className="absolute inset-0 flex items-center justify-center text-white">
-              <p>Error loading video. Please try again later.</p>
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-white space-y-4">
+              <p className="text-lg">Unable to load video.</p>
+              <button
+                onClick={() => {
+                  setVideoError(false);
+                  if (videoRef.current) {
+                    videoRef.current.load();
+                  }
+                }}
+                className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-md transition-colors"
+              >
+                Try Again
+              </button>
             </div>
           ) : (
             <>
@@ -131,10 +141,20 @@ const Gallery: React.FC = () => {
                   muted={isMuted}
                   loop
                   controls={false}
-                  onError={handleVideoError}
+                  onError={(e) => {
+                    console.error('Video loading error:', e);
+                    setVideoError(true);
+                  }}
                   style={{ opacity: isVideoLoaded ? 1 : 0 }}
                 >
-                  <source src="/video.mp4" type="video/mp4" />
+                  <source 
+                    src="/video.mp4" 
+                    type="video/mp4"
+                    onError={(e) => {
+                      console.error('Source error:', e);
+                      setVideoError(true);
+                    }}
+                  />
                   Your browser does not support the video tag.
                 </video>
               </div>
