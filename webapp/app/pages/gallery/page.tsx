@@ -1,5 +1,5 @@
 "use client"
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 
 interface GalleryImage {
@@ -14,42 +14,18 @@ interface ProjectCategory {
   images: GalleryImage[];
 }
 
+interface Video {
+  title: string;
+  description: string;
+  src: string;
+}
+
 const Gallery: React.FC = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [volume, setVolume] = useState(1);
-  const [isMuted, setIsMuted] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
-
-  const togglePlayPause = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
-
-  const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
-  };
-
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
-    if (videoRef.current) {
-      videoRef.current.volume = newVolume;
-      setVolume(newVolume);
-      if (newVolume > 0 && isMuted) {
-        setIsMuted(false);
-        videoRef.current.muted = false;
-      }
-    }
-  };
+  const [videoError, setVideoError] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   // Generate array of 33 gallery images
   const galleryImages: GalleryImage[] = Array.from({ length: 33 }, (_, i) => ({
@@ -57,6 +33,59 @@ const Gallery: React.FC = () => {
     alt: i < 30 ? `Gallery Project ${i + 1}` : `Landscape Project ${i - 29}`,
     description: i < 30 ? `Professional construction and design showcase ${i + 1}` : `Stunning landscape design and outdoor spaces ${i - 29}`
   }));
+
+  const videos: Video[] = [
+    {
+      title: "Our Work in Action",
+      description: "Watch our skilled team transform spaces and bring visions to life",
+      src: "/video.mp4"
+    }
+  ];
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleCanPlay = () => {
+      console.log('Video can play');
+      setIsVideoLoaded(true);
+      video.play().catch(e => console.log('Play failed:', e));
+    };
+
+    const handleLoadedData = () => {
+      console.log('Video data loaded');
+      setIsVideoLoaded(true);
+    };
+
+    const handlePlay = () => {
+      console.log('Video playing');
+    };
+
+    video.addEventListener('canplay', handleCanPlay);
+    video.addEventListener('loadeddata', handleLoadedData);
+    video.addEventListener('play', handlePlay);
+
+    // Force load the video
+    video.load();
+
+    return () => {
+      video.removeEventListener('canplay', handleCanPlay);
+      video.removeEventListener('loadeddata', handleLoadedData);
+      video.removeEventListener('play', handlePlay);
+    };
+  }, []);
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      setIsMuted(!isMuted);
+      videoRef.current.muted = !isMuted;
+    }
+  };
+
+  const handleVideoError = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+    console.error('Video loading error:', e);
+    setVideoError(true);
+  };
 
   // Organize images into categories with more professional descriptions
   const projects: ProjectCategory[] = [
@@ -85,22 +114,60 @@ const Gallery: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Video Section */}
-      <div 
-        className="relative w-full h-[50vh] md:h-[60vh] lg:h-[70vh] overflow-hidden"
-        onMouseEnter={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)}
-      >
-        <div className="relative w-full h-full bg-gray-900">
-          <video
-            ref={videoRef}
-            className="absolute top-0 left-0 w-full h-full object-fill"
-            controls
-            playsInline
-            preload="metadata"
-          >
-            <source src="/video.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+      <div className="relative w-full h-[50vh] md:h-[60vh] lg:h-[70vh] bg-black">
+        <div className="relative w-full h-full">
+          {videoError ? (
+            <div className="absolute inset-0 flex items-center justify-center text-white">
+              <p>Error loading video. Please try again later.</p>
+            </div>
+          ) : (
+            <>
+              <div className="absolute inset-0">
+                <video
+                  ref={videoRef}
+                  className="w-full h-full object-cover"
+                  playsInline
+                  autoPlay
+                  muted={isMuted}
+                  loop
+                  controls={false}
+                  onError={handleVideoError}
+                  style={{ opacity: isVideoLoaded ? 1 : 0 }}
+                >
+                  <source src="/video.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              {!isVideoLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-white">Loading video...</div>
+                </div>
+              )}
+              <div className="absolute bottom-4 right-4 z-10">
+                <button
+                  onClick={toggleMute}
+                  className="bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                >
+                  {isMuted ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072M12 6v12a1 1 0 01-1.707.707L5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            </>
+          )}
+          <div className="absolute inset-0 bg-black/20 pointer-events-none">
+            <div className="absolute bottom-8 left-8 text-white">
+              <h3 className="text-2xl font-bold mb-2">Our Work in Action</h3>
+              <p className="text-lg">Watch our skilled team transform spaces and bring visions to life</p>
+            </div>
+          </div>
         </div>
       </div>
 
