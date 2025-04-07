@@ -1,6 +1,7 @@
 "use client"
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
+import { Play, Volume2 } from 'lucide-react';
 
 interface GalleryImage {
   src: string;
@@ -15,6 +16,8 @@ interface ProjectCategory {
 }
 
 const Gallery: React.FC = () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+
   // Generate array of 33 gallery images
   const galleryImages: GalleryImage[] = Array.from({ length: 33 }, (_, i) => ({
     src: i < 30 ? `/gallery-${i + 1}.png` : `/landscape_${i - 29}.png`,
@@ -46,22 +49,59 @@ const Gallery: React.FC = () => {
     }
   ];
 
+  const handlePlay = () => {
+    setIsPlaying(true);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Video Section */}
-      <div className="relative w-full h-[60vh] bg-black">
-        <video
-          className="w-full h-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-          controls
-          preload="metadata"
-        >
-          <source src="/video.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+      <div className="relative w-full bg-black">
+        {/* Background Image Blur */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-30 blur-sm"
+          style={{ 
+            backgroundImage: 'url("https://img.youtube.com/vi/kOuZ8d6liro/maxresdefault.jpg")',
+            filter: 'blur(8px) brightness(0.5)'
+          }}
+        />
+        
+        {/* Video Container with Responsive Padding */}
+        <div className="relative max-w-[1920px] mx-auto">
+          <div className="w-full">
+            {/* 16:9 Aspect Ratio Container */}
+            <div className="relative pt-[56.25%] lg:pt-[50%] xl:pt-[45%] 2xl:pt-[40%]">
+              <iframe
+                className="absolute inset-0 w-full h-full"
+                src={`https://www.youtube.com/embed/kOuZ8d6liro?autoplay=${isPlaying ? '1' : '0'}&loop=1&playlist=kOuZ8d6liro&controls=1&showinfo=0&rel=0`}
+                title="TGA Handyman Services"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+              
+              {/* Play Button Overlay */}
+              {!isPlaying && (
+                <div 
+                  className="absolute inset-0 flex items-center justify-center bg-black/50 cursor-pointer group"
+                  onClick={handlePlay}
+                >
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="p-6 rounded-full bg-green-500 group-hover:bg-green-600 transition-colors">
+                      <Play className="w-12 h-12 text-white" />
+                    </div>
+                    <div className="flex items-center gap-2 text-white">
+                      <Volume2 className="w-5 h-5" />
+                      <span className="text-sm">Click to play with sound</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/80 pointer-events-none" />
       </div>
 
       {/* Hero Section with Pattern */}
