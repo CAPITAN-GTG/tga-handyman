@@ -77,13 +77,12 @@ const Gallery: React.FC = () => {
                 title="TGA Handyman Services"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-              />
-              
+                />
               {/* Play Button Overlay */}
               {!isPlaying && (
                 <div 
-                  className="absolute inset-0 flex items-center justify-center bg-black/50 cursor-pointer group"
-                  onClick={handlePlay}
+                className="absolute inset-0 flex items-center justify-center bg-black/50 cursor-pointer group"
+                onClick={handlePlay}
                 >
                   <div className="flex flex-col items-center gap-4">
                     <div className="p-6 rounded-full bg-green-500 group-hover:bg-green-600 transition-colors">

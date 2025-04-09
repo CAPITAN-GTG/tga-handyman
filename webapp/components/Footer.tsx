@@ -48,13 +48,10 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">License</h3>
             <div className="space-y-3 text-gray-300">
-              <p>License 1126206</p>
-              <p>Classification(s):</p>
-              <ul className="list-disc list-inside pl-2 space-y-1">
-                <li>B General</li>
-                <li>C27</li>
-                <li>C42</li>
-              </ul>
+              <p>Nevada State Business License: NV 20201930648</p>
+              <p>Clark County Business License: #2005425</p>
+              <p>M50 - Cabinet Manufacturing: #G71-07498</p>
+              <p>R25 - Handyman License: #G70-06742</p>
             </div>
           </div>
         </div>
