@@ -4,8 +4,8 @@ import { ArrowRight } from 'lucide-react';
 import CountUp from 'react-countup';
 
 const stats = [
-  { number: 250, suffix: 'k', label: 'Projects completed' },
-  { number: 150, suffix: 'k', label: 'Clients' },
+  { number: 340, suffix: 'k', label: 'Projects completed' },
+  { number: 350, suffix: 'k', label: 'Clients' },
   { number: 15, suffix: '', label: 'Employees' },
   { number: 60, suffix: '+', label: 'Services Offered' },
 ];

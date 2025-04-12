@@ -18,11 +18,11 @@ interface ProjectCategory {
 const Gallery: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Generate array of 33 gallery images
-  const galleryImages: GalleryImage[] = Array.from({ length: 33 }, (_, i) => ({
-    src: i < 30 ? `/gallery-${i + 1}.png` : `/landscape_${i - 29}.png`,
-    alt: i < 30 ? `Gallery Project ${i + 1}` : `Landscape Project ${i - 29}`,
-    description: i < 30 ? `Professional construction and design showcase ${i + 1}` : `Stunning landscape design and outdoor spaces ${i - 29}`
+  // Generate array of 41 gallery images
+  const galleryImages: GalleryImage[] = Array.from({ length: 41 }, (_, i) => ({
+    src: `/gallery-${i + 1}.png`,
+    alt: `Gallery Project ${i + 1}`,
+    description: `Professional construction and design showcase ${i + 1}`
   }));
 
   // Organize images into categories with more professional descriptions
@@ -45,7 +45,12 @@ const Gallery: React.FC = () => {
     {
       category: 'Landscape & Outdoor',
       description: 'Beautiful outdoor spaces and landscaping',
-      images: galleryImages.slice(25, 33)
+      images: galleryImages.slice(25, 30)
+    },
+    {
+      category: 'General Maintenance',
+      description: 'Comprehensive maintenance and repair solutions',
+      images: galleryImages.slice(30, 41)
     }
   ];
 
