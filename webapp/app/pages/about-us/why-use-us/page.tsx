@@ -44,7 +44,7 @@ export default function WhyUseUs() {
         <div className="prose prose-lg max-w-none mb-12">
           <p className="text-lg text-gray-800 leading-relaxed">
             With over 18 years of handyman experience, TGA Handyman delivers unmatched quality and reliability 
-            to home and business owners throughout California.
+            to home and business owners throughout Las Vegas.
           </p>
         </div>
 

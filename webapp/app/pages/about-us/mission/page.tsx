@@ -57,7 +57,7 @@ export default function CompanyMission() {
           <h1 className="text-4xl font-bold text-white mb-4">Our Mission & Values</h1>
           <p className="text-green-100 text-lg max-w-2xl">
             Delivering excellence in every project, building trust through quality workmanship, 
-            and setting the standard for professional handyman services in California.
+            and setting the standard for professional handyman services in Las Vegas.
           </p>
         </div>
       </div>
@@ -82,7 +82,7 @@ export default function CompanyMission() {
           <h2 className="text-2xl font-bold text-green-900 mb-6">Our Purpose</h2>
           <div className="space-y-4">
             <p className="text-gray-700">
-              We strive to be California's most trusted handyman service provider, delivering 
+              We strive to be Las Vegas's most trusted handyman service provider, delivering 
               exceptional results through our team's expertise and dedication to customer satisfaction.
             </p>
             <p className="text-gray-700">
@@ -96,7 +96,7 @@ export default function CompanyMission() {
         <div className="bg-white border border-green-200 rounded-lg p-8 mb-12">
           <h2 className="text-2xl font-bold text-green-900 mb-4">Looking Forward</h2>
           <p className="text-gray-700 mb-4">
-            We continue to strengthen our reputation in California through exceptional service 
+            We continue to strengthen our reputation in Las Vegas through exceptional service 
             and word-of-mouth recommendations from satisfied clients.
           </p>
         </div>

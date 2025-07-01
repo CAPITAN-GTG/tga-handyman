@@ -51,12 +51,12 @@ export default function ServiceAreas() {
               </div>
               
               <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
-                Serving All of California with Excellence
+                Serving All of Las Vegas with Excellence
               </h1>
               
               <p className="text-lg text-gray-300 max-w-xl">
                 From Los Angeles to surrounding counties, we provide comprehensive construction 
-                and repair services throughout California. Find out if we serve your area.
+                and repair services throughout Las Vegas. Find out if we serve your area.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
@@ -100,7 +100,7 @@ export default function ServiceAreas() {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">Areas We Serve</h2>
           <p className="text-lg text-gray-600">
-            Our service coverage extends throughout California, with a focus on major metropolitan 
+            Our service coverage extends throughout Las Vegas, with a focus on major metropolitan 
             areas and their surrounding communities.
           </p>
         </div>
@@ -207,7 +207,7 @@ export default function ServiceAreas() {
                     </div>
                     <div>
                       <h4 className="text-white font-medium">Wide Coverage</h4>
-                      <p className="text-gray-400 text-sm">Serving all major areas in California</p>
+                      <p className="text-gray-400 text-sm">Serving all major areas in Las Vegas</p>
                     </div>
                   </div>
                   

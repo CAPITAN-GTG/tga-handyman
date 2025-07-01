@@ -59,7 +59,7 @@ const AboutUs = () => {
         <div className="max-w-3xl mx-auto text-center mb-16">
           <p className="text-xl text-gray-900 leading-relaxed">
             At TGA Handyman, we deliver top-tier commercial construction and facility maintenance 
-            services throughout California. With over 18 years of experience, our team of skilled 
+            services throughout Las Vegas. With over 18 years of experience, our team of skilled 
             professionals handles everything from ground-up construction to routine maintenance, 
             ensuring quality results within budget and established timelines.
           </p>

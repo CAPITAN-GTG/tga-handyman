@@ -33,7 +33,7 @@ export default function HandymanServices() {
           </div>
           <p className="mt-4 text-lg text-green-50 max-w-3xl">
             With over 18 years of experience, TGA Handyman provides comprehensive handyman services 
-            for both residential and commercial properties in California. Our skilled technicians are 
+            for both residential and commercial properties in Las Vegas. Our skilled technicians are 
             equipped to handle a wide range of repairs and improvements.
           </p>
         </div>

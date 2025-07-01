@@ -1,6 +1,6 @@
 "use client";
 
-import { Lightbulb, Wrench, DoorClosed, TreePine, ArrowRight, Droplet, Building2, Home, Hammer, HardHat, Ruler, PaintBucket, WrenchIcon, Leaf, Droplets, Construction, Building, HomeIcon, Zap, DoorOpen, Trees } from 'lucide-react';
+import { Lightbulb, Wrench, DoorClosed, TreePine, ArrowRight, Droplet, Building2, Home, Hammer, HardHat, Ruler, PaintBucket, WrenchIcon, Leaf, Droplets, Construction, Building, HomeIcon, Zap, DoorOpen, Trees, Wind } from 'lucide-react';
 import Link from 'next/link';
 import Welcome from '../components/Welcome';
 import Dream from '../components/Dream';
@@ -102,6 +102,18 @@ const services = [
       'Site clearing',
       'Selective demolition',
       'Full structure demolition'
+    ]
+  },
+  {
+    title: 'AC Service',
+    icon: Wind,
+    services: [
+      'Repairs',
+      'Fan Replacements',
+      'Compressors',
+      'Freon R22 410 A',
+      'Freon R32',
+      'Duct repairs and new installations'
     ]
   }
 ];
