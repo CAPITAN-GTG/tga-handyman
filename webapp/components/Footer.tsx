@@ -72,6 +72,10 @@ const Footer = () => {
               <Link href="/pages/privacy" className="text-gray-400 hover:text-green-500 transition-colors duration-300">
                 Privacy
               </Link>
+              <span className="text-gray-600">|</span>
+              <a href="https://grimo-dev.vercel.app" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-green-500 transition-colors duration-300 text-xs">
+                Powered by GrimoDev
+              </a>
             </div>
           </div>
         </div>
