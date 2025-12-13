@@ -12,6 +12,13 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
+  if (!request.body) {
+    return NextResponse.json(
+      { error: 'Request body is required' },
+      { status: 400 }
+    );
+  }
+
   // ⚠️ The below code is for App Router Route Handlers only
   const blob = await put(filename, request.body, {
     access: 'public',
