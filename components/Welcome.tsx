@@ -11,7 +11,7 @@ const Welcome = () => {
           <div className="relative">
             <div className="aspect-w-16 aspect-h-12 overflow-hidden shadow-xl">
               <img
-                src="/electrical.png"
+                src="/electrical.webp"
                 alt="TGA Handyman Electrical Services"
                 className="object-fill w-full h-full transform hover:scale-105 transition-transform duration-500"
               />

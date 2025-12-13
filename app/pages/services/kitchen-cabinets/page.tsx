@@ -10,7 +10,7 @@ export default function KitchenCabinets() {
       <div className="relative">
         <div className="absolute inset-0">
           <Image
-            src="/kitchen-repairs.jpg"
+            src="/kitchen-repairs.webp"
             alt="Professional kitchen cabinet services"
             fill
             className="object-cover"

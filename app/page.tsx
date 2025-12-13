@@ -129,7 +129,7 @@ const FrontPage = () => {
         <div className="absolute inset-0">
           <div 
             className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat filter grayscale"
-            style={{ backgroundImage: 'url("/bg.png")' }}
+            style={{ backgroundImage: 'url("/bg.webp")' }}
           />
           <div className="absolute inset-0 bg-black/60" />
         </div>

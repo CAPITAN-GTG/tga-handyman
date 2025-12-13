@@ -16,7 +16,7 @@ const Dream = () => {
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-fixed grayscale"
-        style={{ backgroundImage: 'url("/dream.jpg")' }}
+        style={{ backgroundImage: 'url("/dream.webp")' }}
       >
         <div className="absolute inset-0 bg-black/80" />
       </div>

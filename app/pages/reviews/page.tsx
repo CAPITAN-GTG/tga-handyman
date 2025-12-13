@@ -8,11 +8,11 @@ const Reviews = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   
   const projectImages = [
-    { src: '/projects-1.jpg', alt: 'TGA Handyman Project 1' },
-    { src: '/projects-2.jpg', alt: 'TGA Handyman Project 2' },
-    { src: '/projects-3.png', alt: 'TGA Handyman Project 3' },
-    { src: '/projects-4.png', alt: 'TGA Handyman Project 4' },
-    { src: '/projects-5.png', alt: 'TGA Handyman Project 5' },
+    { src: '/projects-1.webp', alt: 'TGA Handyman Project 1' },
+    { src: '/projects-2.webp', alt: 'TGA Handyman Project 2' },
+    { src: '/projects-3.webp', alt: 'TGA Handyman Project 3' },
+    { src: '/projects-4.webp', alt: 'TGA Handyman Project 4' },
+    { src: '/projects-5.webp', alt: 'TGA Handyman Project 5' },
   ];
 
   const handlePreviousImage = () => {

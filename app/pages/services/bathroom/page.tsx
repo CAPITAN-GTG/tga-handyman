@@ -10,7 +10,7 @@ export default function BathroomServices() {
       <div className="relative">
         <div className="absolute inset-0">
           <Image
-            src="/bathroom.jpg"
+            src="/bathroom.webp"
             alt="Luxury bathroom renovation"
             fill
             className="object-cover"

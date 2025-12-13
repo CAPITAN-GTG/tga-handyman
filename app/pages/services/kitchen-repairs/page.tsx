@@ -10,7 +10,7 @@ export default function KitchenRepairs() {
       <div className="relative">
         <div className="absolute inset-0">
           <Image
-            src="/kitchen-repairs.jpg"
+            src="/kitchen-repairs.webp"
             alt="Kitchen with wood cabinetry and island"
             fill
             style={{ objectFit: 'cover' }}

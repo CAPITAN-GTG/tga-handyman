@@ -10,7 +10,7 @@ export default function DrywallRepairs() {
       <div className="relative">
         <div className="absolute inset-0">
           <Image
-            src="/drywall.jpg"
+            src="/drywall.webp"
             alt="Professional drywall repair services"
             fill
             className="object-cover"
