@@ -1,8 +1,6 @@
 "use client";
 
 import { Wrench, CheckCircle2, Phone } from 'lucide-react';
-import Link from 'next/link';
-import Image from 'next/image';
 
 const services = [
   "Interior and exterior painting",

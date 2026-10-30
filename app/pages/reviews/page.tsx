@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Star, ExternalLink, MapPin, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 const Reviews = () => {
@@ -96,10 +97,12 @@ const Reviews = () => {
                   className="relative h-48 overflow-hidden rounded-lg cursor-pointer group"
                   onClick={() => setSelectedImage(image.src)}
                 >
-                  <img
+                  <Image
                     src={image.src}
                     alt={image.alt}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                    className="object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                 </div>
               ))}
@@ -162,10 +165,13 @@ const Reviews = () => {
             </button>
             
             <div className="relative w-full h-full max-h-[90vh]">
-              <img
+              <Image
                 src={selectedImage}
                 alt="Project Preview"
-                className="w-full h-full object-contain"
+                fill
+                sizes="100vw"
+                className="object-contain"
+                priority
               />
             </div>
             <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">

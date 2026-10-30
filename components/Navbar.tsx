@@ -1,6 +1,6 @@
 "use client";
 
-import { Disclosure, Transition, Menu } from '@headlessui/react';
+import { Transition, Menu } from '@headlessui/react';
 import { 
   Menu as MenuIcon, 
   X,
@@ -25,6 +25,7 @@ import {
   Phone,
   Sparkles,
 } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { type FC } from 'react';
@@ -81,6 +82,14 @@ const Navbar: FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeMobileDropdown, setActiveMobileDropdown] = useState<string | null>(null);
+  const [menuPathname, setMenuPathname] = useState(pathname);
+
+  // Reset mobile menu when the route changes (React-recommended render adjustment)
+  if (pathname !== menuPathname) {
+    setMenuPathname(pathname);
+    setMobileMenuOpen(false);
+    setActiveMobileDropdown(null);
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -92,9 +101,21 @@ const Navbar: FC = () => {
   }, []);
 
   useEffect(() => {
-    // Close mobile menu when route changes
-    setMobileMenuOpen(false);
-  }, [pathname]);
+    if (!mobileMenuOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMobileMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [mobileMenuOpen]);
 
   const isCurrentPath = (path: string): boolean => pathname === path;
   
@@ -106,8 +127,13 @@ const Navbar: FC = () => {
     }
   };
 
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+    setActiveMobileDropdown(null);
+  };
+
   return (
-    <div className={`sticky top-0 z-50 w-full ${scrolled ? 'shadow-lg shadow-black/10' : ''} transition-all duration-300`}>
+    <div className={`sticky top-0 z-50 w-full ${scrolled ? 'shadow-lg shadow-black/10' : ''} transition-[box-shadow] duration-300`}>
       {/* Top Contact Bar */}
       <div className="hidden lg:block bg-white text-black py-1.5 border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -130,11 +156,14 @@ const Navbar: FC = () => {
           <div className="flex justify-between items-center h-16 lg:h-20">
             {/* Logo */}
             <div className="flex-shrink-0 flex items-center">
-              <Link href="/" className="flex items-center">
-                <img 
-                  src="/logo.webp" 
-                  alt="TGA Handyman Logo" 
-                  className={`transition-all duration-300 ${scrolled ? 'h-10 lg:h-12' : 'h-12 lg:h-14'}`}
+              <Link href="/" className="flex items-center" onClick={closeMobileMenu}>
+                <Image
+                  src="/logo.webp"
+                  alt="TGA Handyman Logo"
+                  width={180}
+                  height={56}
+                  priority
+                  className={`w-auto transition-all duration-300 ${scrolled ? 'h-10 lg:h-12' : 'h-12 lg:h-14'}`}
                 />
               </Link>
             </div>
@@ -363,6 +392,8 @@ const Navbar: FC = () => {
               <button
                 type="button"
                 className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-green-400 hover:bg-gray-800 focus:outline-none"
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-menu"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 <span className="sr-only">{mobileMenuOpen ? 'Close menu' : 'Open menu'}</span>
@@ -377,112 +408,127 @@ const Navbar: FC = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      <Transition
-        show={mobileMenuOpen}
-        enter="transition-opacity duration-300"
-        enterFrom="opacity-0"
-        enterTo="opacity-100"
-        leave="transition-opacity duration-200"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
+      {/* Mobile Menu - fixed overlay so expanded items stay reachable on short screens */}
+      <div
+        className={`md:hidden fixed inset-0 top-16 z-40 ${
+          mobileMenuOpen ? 'pointer-events-auto' : 'pointer-events-none invisible'
+        }`}
+        aria-hidden={!mobileMenuOpen}
       >
-        <div className="md:hidden bg-gray-900 border-b border-gray-800 shadow-xl">
+        <button
+          type="button"
+          tabIndex={mobileMenuOpen ? 0 : -1}
+          aria-label="Close menu"
+          className={`absolute inset-0 bg-black/50 transition-opacity duration-200 ${mobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
+          onClick={closeMobileMenu}
+        />
+        <nav
+          id="mobile-menu"
+          className={`absolute top-0 left-0 right-0 max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain bg-gray-900 border-b border-gray-800 shadow-xl transition-all duration-200 ease-out ${
+            mobileMenuOpen
+              ? 'translate-y-0 opacity-100'
+              : '-translate-y-2 opacity-0'
+          }`}
+        >
           <div className="divide-y divide-gray-800">
             {navigation.map((item) => {
               // About Us Mobile Dropdown
               if (item.name === 'About Us') {
+                const aboutOpen = activeMobileDropdown === 'about';
                 return (
                   <div key={item.name} className="py-1.5">
                     <button
+                      type="button"
                       onClick={() => toggleMobileDropdown('about')}
+                      aria-expanded={aboutOpen}
                       className="flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium text-gray-300"
                     >
                       <div className="flex items-center gap-3">
                         <item.icon className="h-5 w-5 flex-shrink-0 text-green-400" />
                         <span>About Us</span>
                       </div>
-                      <ChevronDown className={`w-5 h-5 text-green-400 transition-transform duration-200 ${activeMobileDropdown === 'about' ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`w-5 h-5 text-green-400 transition-transform duration-200 ${aboutOpen ? 'rotate-180' : ''}`} />
                     </button>
-                    <Transition
-                      show={activeMobileDropdown === 'about'}
-                      enter="transition-all duration-300 ease-out"
-                      enterFrom="max-h-0 opacity-0"
-                      enterTo="max-h-96 opacity-100"
-                      leave="transition-all duration-200 ease-in"
-                      leaveFrom="max-h-96 opacity-100"
-                      leaveTo="max-h-0 opacity-0"
+                    <div
+                      className={`grid transition-[grid-template-rows] duration-200 ease-out ${
+                        aboutOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                      }`}
                     >
-                      <div className="overflow-hidden bg-gray-800/50">
-                        {aboutUsOptions.map((option) => (
-                          <Link
-                            key={option.name}
-                            href={option.href}
-                            className="flex items-center gap-3 w-full px-4 py-3 pl-10 text-sm text-gray-300 hover:bg-gray-800 hover:text-green-400"
-                            onClick={() => setMobileMenuOpen(false)}
-                          >
-                            <option.icon className="h-4 w-4 flex-shrink-0" />
-                            <span>{option.name}</span>
-                          </Link>
-                        ))}
+                      <div className="overflow-hidden" inert={aboutOpen ? undefined : true} aria-hidden={!aboutOpen}>
+                        <div className="bg-gray-800/50">
+                          {aboutUsOptions.map((option) => (
+                            <Link
+                              key={option.name}
+                              href={option.href}
+                              tabIndex={aboutOpen ? undefined : -1}
+                              className="flex items-center gap-3 w-full px-4 py-3 pl-10 text-sm text-gray-300 hover:bg-gray-800 hover:text-green-400"
+                              onClick={closeMobileMenu}
+                            >
+                              <option.icon className="h-4 w-4 flex-shrink-0" />
+                              <span>{option.name}</span>
+                            </Link>
+                          ))}
+                        </div>
                       </div>
-                    </Transition>
+                    </div>
                   </div>
                 );
               }
 
               // Services Mobile Dropdown
               if (item.name === 'Services') {
+                const servicesOpen = activeMobileDropdown === 'services';
                 return (
                   <div key={item.name} className="py-1.5">
                     <button
+                      type="button"
                       onClick={() => toggleMobileDropdown('services')}
+                      aria-expanded={servicesOpen}
                       className="flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium text-gray-300"
                     >
                       <div className="flex items-center gap-3">
                         <item.icon className="h-5 w-5 flex-shrink-0 text-green-400" />
                         <span>Services</span>
                       </div>
-                      <ChevronDown className={`w-5 h-5 text-green-400 transition-transform duration-200 ${activeMobileDropdown === 'services' ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`w-5 h-5 text-green-400 transition-transform duration-200 ${servicesOpen ? 'rotate-180' : ''}`} />
                     </button>
-                    <Transition
-                      show={activeMobileDropdown === 'services'}
-                      enter="transition-all duration-300 ease-out"
-                      enterFrom="max-h-0 opacity-0"
-                      enterTo="max-h-[1000px] opacity-100"
-                      leave="transition-all duration-200 ease-in"
-                      leaveFrom="max-h-[1000px] opacity-100"
-                      leaveTo="max-h-0 opacity-0"
+                    <div
+                      className={`grid transition-[grid-template-rows] duration-200 ease-out ${
+                        servicesOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                      }`}
                     >
-                      <div className="overflow-hidden bg-gray-800/50">
-                        {['interior', 'kitchen', 'bathroom', 'construction', 'additional'].map((category) => {
-                          const categoryServices = serviceOptions.filter(opt => opt.category === category);
-                          if (categoryServices.length === 0) return null;
-                          
-                          return (
-                            <div key={category}>
-                              <div className="px-10 pt-3 pb-1 text-sm font-semibold text-green-400 uppercase">
-                                {category === 'interior' ? 'Home & Interior' : 
-                                 category === 'kitchen' ? 'Kitchen' :
-                                 category === 'bathroom' ? 'Bathroom' :
-                                 category === 'construction' ? 'Construction' : 'Additional Services'}
+                      <div className="overflow-hidden" inert={servicesOpen ? undefined : true} aria-hidden={!servicesOpen}>
+                        <div className="bg-gray-800/50 pb-2">
+                          {['interior', 'kitchen', 'bathroom', 'construction', 'additional'].map((category) => {
+                            const categoryServices = serviceOptions.filter(opt => opt.category === category);
+                            if (categoryServices.length === 0) return null;
+                            
+                            return (
+                              <div key={category}>
+                                <div className="px-10 pt-3 pb-1 text-sm font-semibold text-green-400 uppercase">
+                                  {category === 'interior' ? 'Home & Interior' : 
+                                   category === 'kitchen' ? 'Kitchen' :
+                                   category === 'bathroom' ? 'Bathroom' :
+                                   category === 'construction' ? 'Construction' : 'Additional Services'}
+                                </div>
+                                {categoryServices.map((service) => (
+                                  <Link
+                                    key={service.name}
+                                    href={service.href}
+                                    tabIndex={servicesOpen ? undefined : -1}
+                                    className="flex items-center gap-3 w-full px-4 py-2.5 pl-10 text-sm text-gray-300 hover:bg-gray-800 hover:text-green-400"
+                                    onClick={closeMobileMenu}
+                                  >
+                                    <service.icon className="h-4 w-4 flex-shrink-0" />
+                                    <span>{service.name}</span>
+                                  </Link>
+                                ))}
                               </div>
-                              {categoryServices.map((service) => (
-                                <Link
-                                  key={service.name}
-                                  href={service.href}
-                                  className="flex items-center gap-3 w-full px-4 py-2.5 pl-10 text-sm text-gray-300 hover:bg-gray-800 hover:text-green-400"
-                                  onClick={() => setMobileMenuOpen(false)}
-                                >
-                                  <service.icon className="h-4 w-4 flex-shrink-0" />
-                                  <span>{service.name}</span>
-                                </Link>
-                              ))}
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                        </div>
                       </div>
-                    </Transition>
+                    </div>
                   </div>
                 );
               }
@@ -501,7 +547,7 @@ const Navbar: FC = () => {
                       flex items-center gap-3 px-4 py-3.5 text-sm font-medium
                       ${isCurrentPath(item.href) ? 'bg-green-500 text-white' : 'text-gray-300'}
                     `}
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={closeMobileMenu}
                   >
                     <item.icon className="h-5 w-5 flex-shrink-0" />
                     <span>{item.name}</span>
@@ -517,7 +563,7 @@ const Navbar: FC = () => {
                     flex items-center gap-3 px-4 py-3.5 text-sm font-medium
                     ${isCurrentPath(item.href) ? 'bg-green-500 text-white' : 'text-gray-300'}
                   `}
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={closeMobileMenu}
                 >
                   <item.icon className="h-5 w-5 flex-shrink-0" />
                   <span>{item.name}</span>
@@ -527,7 +573,7 @@ const Navbar: FC = () => {
             
             {/* Mobile Contact Info */}
             <div className="py-3 px-4 bg-gray-800/50">
-              <p className="text-sm font-semibold text-green-400 uppercase mb-2">Contact Us</p>
+              <p className="text-sm font-semibold text-green-400 uppercase mb-2">Call Us</p>
               <div className="space-y-2">
                 <a href="tel:8185543033" className="flex items-center gap-3 text-sm text-gray-300">
                   <Phone className="h-4 w-4 text-green-400" />
@@ -540,8 +586,8 @@ const Navbar: FC = () => {
               </div>
             </div>
           </div>
-        </div>
-      </Transition>
+        </nav>
+      </div>
     </div>
   );
 };

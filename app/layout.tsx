@@ -7,7 +7,8 @@ import Footer from "@/components/Footer";
 const openSans = Open_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  display: 'swap',
+  display: "swap",
+  variable: "--font-open-sans",
 });
 
 export const metadata: Metadata = {
@@ -21,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={openSans.variable}>
       <body className={`${openSans.className} antialiased`}>
         <Navbar />
         {children}

@@ -1,4 +1,5 @@
 "use client"
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
@@ -9,11 +10,13 @@ const Welcome = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Image Section */}
           <div className="relative">
-            <div className="aspect-w-16 aspect-h-12 overflow-hidden shadow-xl">
-              <img
+            <div className="relative aspect-[4/3] overflow-hidden shadow-xl">
+              <Image
                 src="/electrical.webp"
                 alt="TGA Handyman Electrical Services"
-                className="object-fill w-full h-full transform hover:scale-105 transition-transform duration-500"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover transform hover:scale-105 transition-transform duration-500"
               />
             </div>
             {/* Decorative element */}

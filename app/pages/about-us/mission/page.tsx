@@ -1,6 +1,6 @@
 "use client";
 
-import { Users, Phone } from 'lucide-react';
+import { Phone } from 'lucide-react';
 import Link from 'next/link';
 
 const features = [

@@ -1,6 +1,6 @@
 "use client";
 
-import { Lightbulb, Wrench, DoorClosed, TreePine, ArrowRight, Droplet, Building2, Home, Hammer, HardHat, Ruler, PaintBucket, WrenchIcon, Leaf, Droplets, Construction, Building, HomeIcon, Zap, DoorOpen, Trees, Wind } from 'lucide-react';
+import { ArrowRight, Droplet, Hammer, WrenchIcon, Building, HomeIcon, Zap, DoorOpen, Trees, Wind } from 'lucide-react';
 import Link from 'next/link';
 import Welcome from '../components/Welcome';
 import Dream from '../components/Dream';
@@ -165,7 +165,7 @@ const FrontPage = () => {
 
             {/* Service Grid */}
             <div className="grid grid-cols-2 gap-1 bg-white/5 backdrop-blur-sm p-1">
-              {services.map((service, index) => (
+              {services.map((service) => (
                 <div
                   key={service.title}
                   className="group relative overflow-hidden bg-black/40 p-6 hover:bg-green-900/40 transition-colors duration-300 cursor-pointer"
