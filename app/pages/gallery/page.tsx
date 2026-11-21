@@ -17,8 +17,8 @@ interface ProjectCategory {
 const Gallery: React.FC = () => {
   const videoUrl = process.env.NEXT_PUBLIC_VIDEO_BLOB_URL;
 
-  // Generate array of 41 gallery images
-  const galleryImages: GalleryImage[] = Array.from({ length: 41 }, (_, i) => ({
+  // Generate array of 52 gallery images
+  const galleryImages: GalleryImage[] = Array.from({ length: 52 }, (_, i) => ({
     src: `/gallery-${i + 1}.webp`,
     alt: `Gallery Project ${i + 1}`,
     description: `Professional construction and design showcase ${i + 1}`
@@ -49,7 +49,7 @@ const Gallery: React.FC = () => {
     {
       category: 'General Maintenance',
       description: 'Comprehensive maintenance and repair solutions',
-      images: galleryImages.slice(30, 41)
+      images: galleryImages.slice(30, 52)
     }
   ];
 
