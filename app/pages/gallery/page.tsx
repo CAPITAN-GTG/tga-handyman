@@ -15,7 +15,11 @@ interface ProjectCategory {
 }
 
 const Gallery: React.FC = () => {
-  const videoUrl = process.env.NEXT_PUBLIC_VIDEO_BLOB_URL;
+  const videoUrls = [
+    "https://v37zcerrkpzwy7ec.public.blob.vercel-storage.com/gallery-1.mp4",
+    "https://v37zcerrkpzwy7ec.public.blob.vercel-storage.com/gallery-13.mp4",
+    "https://v37zcerrkpzwy7ec.public.blob.vercel-storage.com/gallery-26.mp4",
+  ];
 
   // Generate array of 52 gallery images
   const galleryImages: GalleryImage[] = Array.from({ length: 52 }, (_, i) => ({
@@ -56,24 +60,30 @@ const Gallery: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Video Section - Full Width Separator */}
-      {videoUrl && (
-        <div className="relative w-full bg-black overflow-hidden">
-          {/* Video Container - Edge to Edge with Max Height */}
-          <div className="relative w-full aspect-video" style={{ maxHeight: '600px' }}>
-            <video
-              className="absolute inset-0 w-full h-full object-cover"
-              src={videoUrl}
-              autoPlay
-              loop
-              muted={false}
-              playsInline
-              controls
+      {videoUrls.length > 0 && (
+        <div className="w-full bg-black overflow-hidden">
+          {videoUrls.map((videoUrl, index) => (
+            <div
+              key={videoUrl}
+              className="relative w-full aspect-video overflow-hidden"
               style={{ maxHeight: '600px' }}
-            />
-          </div>
-
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/80 pointer-events-none" />
+            >
+              <video
+                className="absolute inset-0 w-full h-full object-cover"
+                src={videoUrl}
+                autoPlay={index === 0}
+                loop={index === 0}
+                muted={index === 0}
+                playsInline
+                controls
+                preload="metadata"
+                style={{ maxHeight: '600px' }}
+              />
+              {index === 0 && (
+                <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/80 pointer-events-none" />
+              )}
+            </div>
+          ))}
         </div>
       )}
 
