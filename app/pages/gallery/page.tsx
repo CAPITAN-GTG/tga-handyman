@@ -15,7 +15,9 @@ interface ProjectCategory {
 }
 
 const Gallery: React.FC = () => {
-  const videoUrls = [
+  const mainVideoUrl =
+    "https://v37zcerrkpzwy7ec.public.blob.vercel-storage.com/video.mp4";
+  const clipVideos = [
     "https://v37zcerrkpzwy7ec.public.blob.vercel-storage.com/gallery-1.mp4",
     "https://v37zcerrkpzwy7ec.public.blob.vercel-storage.com/gallery-13.mp4",
     "https://v37zcerrkpzwy7ec.public.blob.vercel-storage.com/gallery-26.mp4",
@@ -59,33 +61,36 @@ const Gallery: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Video Section - Full Width Separator */}
-      {videoUrls.length > 0 && (
-        <div className="w-full bg-black overflow-hidden">
-          {videoUrls.map((videoUrl, index) => (
-            <div
-              key={videoUrl}
-              className="relative w-full aspect-video overflow-hidden"
-              style={{ maxHeight: '600px' }}
-            >
+      {/* Video Section - main on top, clips as squares */}
+      <div className="w-full bg-black overflow-hidden">
+        <div className="relative w-full aspect-video" style={{ maxHeight: '600px' }}>
+          <video
+            className="absolute inset-0 h-full w-full object-cover"
+            src={mainVideoUrl}
+            autoPlay
+            loop
+            muted
+            playsInline
+            controls
+            preload="metadata"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/80" />
+        </div>
+
+        <div className="mx-auto grid max-w-7xl grid-cols-3 gap-2 px-2 py-2 sm:gap-3 sm:px-4 sm:py-3 lg:gap-4 lg:px-8">
+          {clipVideos.map((src) => (
+            <div key={src} className="relative aspect-square overflow-hidden rounded-lg bg-black">
               <video
-                className="absolute inset-0 w-full h-full object-cover"
-                src={videoUrl}
-                autoPlay={index === 0}
-                loop={index === 0}
-                muted={index === 0}
-                playsInline
+                className="h-full w-full object-cover"
+                src={src}
                 controls
+                playsInline
                 preload="metadata"
-                style={{ maxHeight: '600px' }}
               />
-              {index === 0 && (
-                <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/80 pointer-events-none" />
-              )}
             </div>
           ))}
         </div>
-      )}
+      </div>
 
       {/* Gallery Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
