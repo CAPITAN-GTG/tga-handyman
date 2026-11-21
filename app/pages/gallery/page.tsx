@@ -61,8 +61,8 @@ const Gallery: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Video Section - main on top, clips as squares */}
-      <div className="w-full bg-black overflow-hidden">
+      {/* Main video */}
+      <div className="w-full overflow-hidden bg-black">
         <div className="relative w-full aspect-video" style={{ maxHeight: '600px' }}>
           <video
             className="absolute inset-0 h-full w-full object-cover"
@@ -75,20 +75,6 @@ const Gallery: React.FC = () => {
             preload="metadata"
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/80" />
-        </div>
-
-        <div className="mx-auto grid max-w-7xl grid-cols-3 gap-2 px-2 py-2 sm:gap-3 sm:px-4 sm:py-3 lg:gap-4 lg:px-8">
-          {clipVideos.map((src) => (
-            <div key={src} className="relative aspect-square overflow-hidden rounded-lg bg-black">
-              <video
-                className="h-full w-full object-cover"
-                src={src}
-                controls
-                playsInline
-                preload="metadata"
-              />
-            </div>
-          ))}
         </div>
       </div>
 
@@ -138,6 +124,37 @@ const Gallery: React.FC = () => {
               </div>
             </section>
           ))}
+
+          <section className="scroll-mt-16" id="project-videos">
+            <div className="mb-4 pb-4 border-b border-gray-200">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+                Project Videos
+              </h2>
+              <p className="text-sm text-gray-600">
+                Short clips from recent on-site work
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+              {clipVideos.map((src, index) => (
+                <div
+                  key={src}
+                  className="group relative overflow-hidden rounded-lg bg-gray-100 shadow-sm transition-all duration-300 hover:shadow-md"
+                >
+                  <div className="relative aspect-[4/3] bg-black">
+                    <video
+                      className="absolute inset-0 h-full w-full object-cover"
+                      src={src}
+                      controls
+                      playsInline
+                      preload="metadata"
+                      aria-label={`Project video ${index + 1}`}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
       </div>
     </div>
