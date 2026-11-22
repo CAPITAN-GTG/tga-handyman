@@ -10,9 +10,9 @@ export default function VideoUploadPage() {
   const [error, setError] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Upload Video to Vercel Blob</h1>
+    <div className="min-h-screen bg-brand-mist px-4 py-28 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-2xl">
+        <h1 className="mb-8 font-display text-3xl font-bold tracking-wide text-brand-ink">Upload Video</h1>
 
         <form
           onSubmit={async (event) => {

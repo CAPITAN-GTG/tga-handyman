@@ -1,131 +1,86 @@
-import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { name, email, phone, message, storeConsent, privacyConsent } = body;
 
-    // Validate required fields
     if (!name || !email || !phone || !message || !storeConsent || !privacyConsent) {
-      return NextResponse.json(
-        { error: 'All fields are required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
     if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
-      return NextResponse.json(
-        { error: 'Email service is not configured' },
-        { status: 503 }
-      );
+      return NextResponse.json({ error: "Email service is not configured" }, { status: 503 });
     }
 
+    const safeName = escapeHtml(String(name));
+    const safeEmail = escapeHtml(String(email));
+    const safePhone = escapeHtml(String(phone));
+    const safeMessage = escapeHtml(String(message));
+    const firstName = escapeHtml(String(name).split(" ")[0] || "there");
+
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_APP_PASSWORD,
       },
     });
 
-    // Email content for company notification
     const companyMailOptions = {
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_USER,
-      subject: `New Contact Form Submission from ${name}`,
+      replyTo: String(email),
+      subject: `New TGA Handyman inquiry from ${String(name).replace(/[\r\n]/g, " ")}`,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-          <div style="text-align: center; margin-bottom: 30px;">
-            <img src="https://tgabuildersinc.com/logo.PNG" alt="TGA Handyman Logo" style="max-width: 200px; height: auto;">
-          </div>
-          
-          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 6px; border-left: 4px solid #17416E;">
-            <h2 style="color: #17416E; margin-top: 0;">New Contact Form Submission</h2>
-            <div style="display: grid; grid-template-columns: auto 1fr; gap: 10px; margin-top: 20px;">
-              <div style="font-weight: bold; color: #17416E;">Name:</div>
-              <div>${name}</div>
-              
-              <div style="font-weight: bold; color: #17416E;">Email:</div>
-              <div>${email}</div>
-              
-              <div style="font-weight: bold; color: #17416E;">Phone:</div>
-              <div>${phone}</div>
-              
-              <div style="font-weight: bold; color: #17416E;">Message:</div>
-              <div style="white-space: pre-wrap;">${message}</div>
-              
-              <div style="font-weight: bold; color: #17416E;">Consent to Inquiry:</div>
-              <div>${storeConsent ? '✅ Yes' : '❌ No'}</div>
-              
-              <div style="font-weight: bold; color: #17416E;">Privacy Policy Confirmed:</div>
-              <div>${privacyConsent ? '✅ Yes' : '❌ No'}</div>
-            </div>
+        <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
+          <h1 style="color: #146b3a; font-size: 22px;">TGA Handyman</h1>
+          <div style="background-color: #f3f7f4; padding: 20px; border-left: 4px solid #146b3a;">
+            <h2 style="color: #0f3d28; margin-top: 0;">New repair inquiry</h2>
+            <p><strong>Name:</strong> ${safeName}</p>
+            <p><strong>Email:</strong> ${safeEmail}</p>
+            <p><strong>Phone:</strong> ${safePhone}</p>
+            <p><strong>Message:</strong></p>
+            <p style="white-space: pre-wrap;">${safeMessage}</p>
+            <p><strong>Consent to inquiry:</strong> ${storeConsent ? "Yes" : "No"}</p>
+            <p><strong>Privacy policy confirmed:</strong> ${privacyConsent ? "Yes" : "No"}</p>
           </div>
         </div>
       `,
     };
 
-    // Email content for user thank you
     const userMailOptions = {
       from: process.env.EMAIL_USER,
-      to: email,
-      subject: "We've Received Your Inquiry – Thank You!",
+      to: String(email),
+      subject: "We've received your TGA Handyman inquiry",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
-          <p style="font-size: 16px; line-height: 1.6; color: #333;">Hi ${name.split(' ')[0]},</p>
-          
-          <p style="font-size: 16px; line-height: 1.6; color: #333;">Thank you for reaching out to TGA Handyman! We're excited to learn more about your project and how we can bring your vision to life. One of our team members will be in touch soon.</p>
-          
-          <p style="font-size: 16px; line-height: 1.6; color: #333;">At TGA Handyman, we believe in:</p>
-          
-          <ul style="list-style: none; padding: 0; margin: 0;">
-            <li style="margin-bottom: 15px; display: flex; align-items: flex-start;">
-              <span style="margin-right: 10px; font-size: 20px;">🏡</span>
-              <span style="font-size: 16px; line-height: 1.6;">Delivering exceptional craftsmanship and attention to detail</span>
-            </li>
-            <li style="margin-bottom: 15px; display: flex; align-items: flex-start;">
-              <span style="margin-right: 10px; font-size: 20px;">⚡</span>
-              <span style="font-size: 16px; line-height: 1.6;">Completing projects on time and within budget</span>
-            </li>
-            <li style="margin-bottom: 15px; display: flex; align-items: flex-start;">
-              <span style="margin-right: 10px; font-size: 20px;">🤝</span>
-              <span style="font-size: 16px; line-height: 1.6;">Providing personalized solutions that fit your style and needs</span>
-            </li>
-          </ul>
-
-          <p style="font-size: 16px; line-height: 1.6; color: #333;">If you have any immediate questions, feel free to reply to this email or call us at:</p>
-          
-          <div style="margin: 20px 0;">
-            <p style="font-size: 16px; line-height: 1.6; color: #333;">(818) 554-3033</p>
-          </div>
-
-          <p style="font-size: 16px; line-height: 1.6; color: #333;">Looking forward to working with you!</p>
-          
-          <p style="font-size: 16px; line-height: 1.6; color: #333;">Best,<br>TGA Handyman</p>
-          
-          <div style="margin-top: 20px;">
-            <img src="https://tgabuildersinc.com/logo.PNG" alt="TGA Handyman Logo" style="max-width: 150px; height: auto;">
-          </div>
+          <p style="font-size: 16px; line-height: 1.6; color: #333;">Hi ${firstName},</p>
+          <p style="font-size: 16px; line-height: 1.6; color: #333;">Thank you for contacting TGA Handyman. We received your note and will follow up with a clear next step for the repair.</p>
+          <p style="font-size: 16px; line-height: 1.6; color: #333;">If you need us sooner, call (818) 554-3033 or (702) 755-3316.</p>
+          <p style="font-size: 16px; line-height: 1.6; color: #333;">TGA Handyman<br>1857 Citation Cir, Las Vegas, NV 89123</p>
         </div>
       `,
     };
 
-    // Send both emails
     await Promise.all([
       transporter.sendMail(companyMailOptions),
-      transporter.sendMail(userMailOptions)
+      transporter.sendMail(userMailOptions),
     ]);
 
-    return NextResponse.json(
-      { message: 'Emails sent successfully' },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: "Emails sent successfully" }, { status: 200 });
   } catch (error) {
-    console.error('Error sending emails:', error);
-    return NextResponse.json(
-      { error: 'Failed to send emails' },
-      { status: 500 }
-    );
+    console.error("Error sending emails:", error);
+    return NextResponse.json({ error: "Failed to send emails" }, { status: 500 });
   }
-} 
+}

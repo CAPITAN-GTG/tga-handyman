@@ -1,87 +1,102 @@
-import React from 'react';
-import { X } from 'lucide-react';
+"use client";
+
+import { useEffect, type ElementType } from "react";
+import { X } from "lucide-react";
 
 interface ServicePopupProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   services: string[];
-  icon: React.ElementType;
+  icon: ElementType;
 }
 
-const ServicePopup: React.FC<ServicePopupProps> = ({ isOpen, onClose, title, services, icon: Icon }) => {
+export default function ServicePopup({
+  isOpen,
+  onClose,
+  title,
+  services,
+  icon: Icon,
+}: ServicePopupProps) {
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex min-h-screen items-center justify-center p-4">
-        {/* Backdrop */}
-        <div 
-          className="fixed inset-0 transition-opacity duration-300 ease-in-out bg-black/80" 
+    <div
+      className="fixed inset-0 z-50 overflow-y-auto"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="service-popup-title"
+    >
+      <div className="flex min-h-full items-center justify-center p-4 sm:p-6">
+        <button
+          type="button"
+          className="fixed inset-0 bg-brand-ink/60 transition-opacity"
+          aria-label="Close dialog"
           onClick={onClose}
-          aria-hidden="true"
         />
 
-        {/* Modal */}
-        <div 
-          className="relative w-full max-w-lg transform overflow-hidden bg-white shadow-xl transition-all duration-300 ease-in-out"
-          style={{
-            animation: 'modalIn 0.3s ease-out forwards'
-          }}
-        >
-          {/* Close button */}
-          <button
-            type="button"
-            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors duration-200"
-            onClick={onClose}
-          >
-            <span className="sr-only">Close</span>
-            <X className="h-6 w-6" />
-          </button>
+        <div className="relative w-full max-w-lg overflow-hidden border border-brand-silver/50 bg-white shadow-[0_24px_60px_-28px_rgba(10,10,10,0.45)] motion-safe:animate-[modalIn_0.3s_ease-out_forwards]">
+          <div className="h-1 w-full bg-brand-green" aria-hidden />
 
-          {/* Header */}
-          <div className="bg-black px-6 py-8">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center bg-green-500">
-                <Icon className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-2xl font-medium text-white">
-                {title}
-              </h3>
-            </div>
+          <div className="absolute top-4 right-4">
+            <button
+              type="button"
+              className="inline-flex h-10 w-10 items-center justify-center text-brand-steel transition-colors duration-200 hover:text-brand-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green"
+              onClick={onClose}
+            >
+              <span className="sr-only">Close</span>
+              <X className="h-5 w-5" />
+            </button>
           </div>
 
-          {/* Content */}
-          <div className="px-6 py-6">
-            <div className="space-y-4">
-              {services.map((service, index) => (
-                <div 
-                  key={index} 
-                  className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-green-50 transition-colors duration-200 group cursor-pointer"
+          <div className="px-6 pt-6 pb-7 sm:px-8 sm:pt-7 sm:pb-8">
+            <div className="flex items-start gap-4 pr-10">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center border border-brand-silver/70 bg-brand-mist text-brand-green">
+                <Icon className="h-6 w-6" aria-hidden />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="font-display text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-brand-steel">
+                  Service details
+                </p>
+                <h3
+                  id="service-popup-title"
+                  className="mt-1 font-display text-2xl font-semibold tracking-wide text-brand-ink"
                 >
-                  <div className="w-1.5 h-1.5 bg-green-500 group-hover:scale-150 transition-transform duration-200" />
-                  <span className="text-gray-700 group-hover:text-gray-900">{service}</span>
-                </div>
-              ))}
+                  {title}
+                </h3>
+                <ul className="mt-5 space-y-2.5 border-t border-brand-silver/50 pt-5">
+                  {services.map((service) => (
+                    <li
+                      key={service}
+                      className="flex items-start gap-3 font-body text-brand-navy/85"
+                    >
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 bg-brand-green" aria-hidden />
+                      {service}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      <style jsx global>{`
-        @keyframes modalIn {
-          from {
-            opacity: 0;
-            transform: translateY(-8px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
-};
-
-export default ServicePopup; 
+}
