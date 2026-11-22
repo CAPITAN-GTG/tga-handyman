@@ -1,79 +1,142 @@
-import Link from 'next/link';
-import { Phone, Mail, MapPin } from 'lucide-react';
+import Link from "next/link";
+import { Phone, Mail, MapPin } from "lucide-react";
+import { siteConfig } from "@/lib/seo";
+
+const linkClass =
+  "transition-colors duration-300 hover:text-brand-green-bright focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-green";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const mapQuery = `${siteConfig.address.street}, ${siteConfig.address.city}, ${siteConfig.address.region} ${siteConfig.address.postalCode}`;
 
   return (
-    <footer className="bg-black text-white">
-      {/* Main Footer */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Contact Info */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Contact</h3>
-            <div className="space-y-3">
-              <a href="tel:+18185543033" className="flex items-center gap-3 text-gray-300 hover:text-green-500 transition-colors duration-300">
-                <Phone className="h-5 w-5" />
-                <span>(818) 554-3033</span>
+    <footer className="bg-brand-ink font-body text-brand-silver">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
+          <div className="space-y-6">
+            <h3 className="text-center font-display text-lg font-semibold tracking-wide text-white md:text-left">
+              Contact info
+            </h3>
+            <div className="space-y-4">
+              {siteConfig.phones.map((phone) => (
+                <a
+                  key={phone.tel}
+                  href={`tel:${phone.tel}`}
+                  className={`flex items-center justify-center gap-3 md:justify-start ${linkClass}`}
+                >
+                  <Phone className="h-5 w-5 text-brand-green" />
+                  <span>{phone.display}</span>
+                </a>
+              ))}
+              <a
+                href={`mailto:${siteConfig.email}`}
+                className={`flex items-center justify-center gap-3 md:justify-start ${linkClass}`}
+              >
+                <Mail className="h-5 w-5 text-brand-green" />
+                <span className="break-all">{siteConfig.email}</span>
               </a>
-              <a href="tel:+17027553316" className="flex items-center gap-3 text-gray-300 hover:text-green-500 transition-colors duration-300">
-                <Phone className="h-5 w-5" />
-                <span>(702) 755-3316</span>
-              </a>
-              <a href="mailto:handymanservicestga@gmail.com" className="flex items-center gap-3 text-gray-300 hover:text-green-500 transition-colors duration-300">
-                <Mail className="h-5 w-5" />
-                <span>handymanservicestga@gmail.com</span>
-              </a>
-              <a href="https://maps.google.com/?q=1857 citation cir, Las Vegas, NV 89123" target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 text-gray-300 hover:text-green-500 transition-colors duration-300">
-                <MapPin className="h-5 w-5 mt-1 flex-shrink-0" />
-                <span>1857 Citation Cir, Las Vegas, NV 89123</span>
+              <a
+                href={`https://maps.google.com/?q=${encodeURIComponent(mapQuery)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex items-center justify-center gap-3 md:justify-start ${linkClass}`}
+              >
+                <MapPin className="mt-1 h-5 w-5 flex-shrink-0 text-brand-green" />
+                <span className="text-center md:text-left">{mapQuery}</span>
               </a>
             </div>
           </div>
 
-          {/* Navigation */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Links</h3>
-            <nav className="space-y-3">
-              <Link href="/" className="block text-gray-300 hover:text-green-500 transition-colors duration-300">Home</Link>
-              <Link href="/pages/about-us" className="block text-gray-300 hover:text-green-500 transition-colors duration-300">About Us</Link>
-              <Link href="/pages/reviews" className="block text-gray-300 hover:text-green-500 transition-colors duration-300">Reviews</Link>
-              <Link href="/pages/gallery" className="block text-gray-300 hover:text-green-500 transition-colors duration-300">Gallery</Link>
-              <Link href="/pages/contact-us" className="block text-gray-300 hover:text-green-500 transition-colors duration-300">Contact</Link>
+          <div className="space-y-6">
+            <h3 className="text-center font-display text-lg font-semibold tracking-wide text-white md:text-left">
+              Navigate
+            </h3>
+            <nav className="space-y-4">
+              <Link href="/" className={`block text-center md:text-left ${linkClass}`}>
+                Home
+              </Link>
+              <Link href="/pages/about-us" className={`block text-center md:text-left ${linkClass}`}>
+                About Us
+              </Link>
+              <Link href="/pages/reviews" className={`block text-center md:text-left ${linkClass}`}>
+                Reviews
+              </Link>
+              <Link href="/pages/gallery" className={`block text-center md:text-left ${linkClass}`}>
+                Gallery
+              </Link>
+              <Link href="/pages/contact-us" className={`block text-center md:text-left ${linkClass}`}>
+                Contact
+              </Link>
             </nav>
           </div>
 
-          {/* License Info */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">License</h3>
-            <div className="space-y-3 text-gray-300">
-              <p>Nevada State Business License: NV 20201930648</p>
-              <p>Clark County Business License: #2005425</p>
-              <p>M50 - Cabinet Manufacturing: #G71-07498</p>
-              <p>R25 - Handyman License: #G70-06742</p>
-            </div>
+          <div className="space-y-6">
+            <h3 className="text-center font-display text-lg font-semibold tracking-wide text-white md:text-left">
+              Resources
+            </h3>
+            <nav className="space-y-4">
+              <Link href="/pages/services/emergency" className={`block text-center md:text-left ${linkClass}`}>
+                Emergency service
+              </Link>
+              <Link href="/pages/services/areas" className={`block text-center md:text-left ${linkClass}`}>
+                Service areas
+              </Link>
+              <Link href="/pages/terms" className={`block text-center md:text-left ${linkClass}`}>
+                Terms of Service
+              </Link>
+              <Link href="/pages/privacy" className={`block text-center md:text-left ${linkClass}`}>
+                Privacy Policy
+              </Link>
+            </nav>
+          </div>
+
+          <div className="space-y-6">
+            <h3 className="text-center font-display text-lg font-semibold tracking-wide text-white md:text-left">
+              Licenses
+            </h3>
+            <ul className="space-y-3 text-center text-sm md:text-left">
+              {siteConfig.licenses.map((license) => (
+                <li key={license.code}>
+                  <span className="font-display tracking-wide text-brand-green-bright">{license.code}</span>
+                  <span className="mt-0.5 block text-brand-silver">{license.name}</span>
+                </li>
+              ))}
+              <li>
+                <a
+                  href={siteConfig.yelp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={linkClass}
+                >
+                  Reviews on Yelp
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
 
-      {/* Bottom Bar */}
       <div className="border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-gray-400">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+            <p className="text-sm text-brand-steel">
               © {currentYear} TGA Handyman. All Rights Reserved
             </p>
             <div className="flex items-center gap-4 text-sm">
-              <Link href="/pages/terms" className="text-gray-400 hover:text-green-500 transition-colors duration-300">
-                Terms
+              <Link href="/pages/terms" className={`text-brand-steel ${linkClass}`}>
+                Terms of service
               </Link>
-              <span className="text-gray-600">|</span>
-              <Link href="/pages/privacy" className="text-gray-400 hover:text-green-500 transition-colors duration-300">
-                Privacy
+              <span className="text-white/20">|</span>
+              <Link href="/pages/privacy" className={`text-brand-steel ${linkClass}`}>
+                Privacy Policy
               </Link>
-              <span className="text-gray-600">|</span>
-              <a href="https://grimo-dev.vercel.app" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-green-500 transition-colors duration-300 text-xs">
+              <span className="text-white/20">|</span>
+              <a
+                href="https://grimo-dev.vercel.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`text-xs text-brand-steel ${linkClass}`}
+              >
                 Powered by GrimoDev
               </a>
             </div>
@@ -84,4 +147,4 @@ const Footer = () => {
   );
 };
 
-export default Footer; 
+export default Footer;

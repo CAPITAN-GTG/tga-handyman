@@ -1,105 +1,83 @@
-"use client";
+import { Clock, Shield, Users, Wrench } from "lucide-react";
+import PageContact from "@/components/PageContact";
+import PageHero from "@/components/PageHero";
+import { createPageMetadata } from "@/lib/seo";
 
-import { Clock, Shield, Users, Wrench } from 'lucide-react';
-import Link from 'next/link';
+export const metadata = createPageMetadata({
+  title: "About Us",
+  description:
+    "TGA Handyman is a licensed Las Vegas handyman for electrical, plumbing, fixtures, and everyday repairs across Southern Nevada.",
+  path: "/pages/about-us",
+});
 
 const features = [
   {
     icon: Clock,
-    title: "24/7 Availability",
-    description: "Our Customer Care team is available every day of the year, around the clock."
+    title: "Available when it breaks",
+    description: "Emergency leaks and dead fixtures do not wait for business hours. We schedule around the problem.",
   },
   {
     icon: Shield,
-    title: "Licensed & Insured",
-    description: "All services are completed by licensed, bonded, and insured professionals."
+    title: "Licensed & insured",
+    description: "Nevada R25 handyman, Clark County, state business, and cabinet licenses — bonded and insured.",
   },
   {
     icon: Users,
-    title: "Background Checked",
-    description: "All our employees undergo thorough background checks for your peace of mind."
+    title: "One accountable tech",
+    description: "You talk to the person doing the work. No handoff between a sales desk and a stranger.",
   },
   {
     icon: Wrench,
-    title: "Professional Service",
-    description: "Over 18 years of experience in delivering quality handyman services."
-  }
+    title: "Repair, not a rebuild",
+    description: "We fix electrical, plumbing, fixtures, drywall, and hardware. Large commercial build-outs are not the job.",
+  },
 ];
 
-const AboutUs = () => {
+export default function AboutUs() {
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <div className="relative bg-black">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="space-y-2">
-            <nav className="flex" aria-label="Breadcrumb">
-              <ol className="flex items-center space-x-2 text-sm">
-                <li>
-                  <Link href="/" className="text-gray-400 hover:text-white transition-colors">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <span className="text-gray-600">/</span>
-                </li>
-                <li>
-                  <span className="text-white">About Us</span>
-                </li>
-              </ol>
-            </nav>
-            <h1 className="text-4xl font-bold text-white">About Us</h1>
-          </div>
-        </div>
-      </div>
+    <main className="min-h-screen bg-white">
+      <PageHero
+        eyebrow="TGA Handyman"
+        title="About Us"
+        description="Practical repairs for homes and small commercial spaces in Las Vegas — electrical, plumbing, fixtures, and the list that never quite gets finished."
+        crumbs={[
+          { label: "Home", href: "/" },
+          { label: "About Us" },
+        ]}
+      />
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* Introduction */}
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <p className="text-xl text-gray-900 leading-relaxed">
-            At TGA Handyman, we deliver top-tier commercial construction and facility maintenance 
-            services throughout Las Vegas. With over 18 years of experience, our team of skilled 
-            professionals handles everything from ground-up construction to routine maintenance, 
-            ensuring quality results within budget and established timelines.
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+        <section className="max-w-3xl">
+          <p className="font-body text-lg leading-relaxed text-brand-ink sm:text-xl">
+            TGA Handyman works across Las Vegas, Clark County, and Southern Nevada. The job is
+            straightforward: diagnose the problem, quote it clearly, and leave the repair finished.
           </p>
-        </div>
+          <p className="mt-6 font-body text-base leading-relaxed text-brand-navy/75 sm:text-lg">
+            We hold Nevada state business license NV 20201930648, Clark County license #2005425,
+            M50 cabinet license #G71-07498, and R25 handyman license #G70-06742. Clients find us
+            for outlets, leaks, fans, faucets, patch-and-paint, and the punch list after a bigger job.
+          </p>
+        </section>
 
-        {/* Key Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-2 border-green-500">
-          {features.map((feature, index) => (
-            <div key={index} className="bg-black p-6 group border-2 border-green-500 hover:bg-green-600 transition-colors duration-300">
-              <feature.icon className="h-6 w-6 text-green-500 group-hover:text-white mb-4" />
-              <h3 className="font-semibold text-white mb-2">{feature.title}</h3>
-              <p className="text-sm text-gray-400 group-hover:text-white/90">{feature.description}</p>
-            </div>
+        <ul className="mt-16 grid grid-cols-1 gap-8 border-t border-brand-ink/10 pt-16 sm:grid-cols-2">
+          {features.map((feature) => (
+            <li key={feature.title} className="border-l-2 border-brand-green pl-5">
+              <feature.icon className="h-5 w-5 text-brand-green" aria-hidden />
+              <h2 className="mt-3 font-display text-xl font-semibold tracking-wide text-brand-ink">
+                {feature.title}
+              </h2>
+              <p className="mt-2 font-body text-sm leading-relaxed text-brand-navy/70">
+                {feature.description}
+              </p>
+            </li>
           ))}
-        </div>
-
-        {/* Contact Section */}
-        <div className="mt-16 bg-black p-8 text-center">
-          <h2 className="text-2xl font-bold text-white mb-4">Ready to Get Started?</h2>
-          <p className="text-gray-400 mb-6">
-            Contact us today for professional handyman services
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a 
-              href="tel:8185543033" 
-              className="inline-flex items-center px-8 py-3 text-base font-medium text-white bg-green-600 hover:bg-green-700 transition-colors duration-300"
-            >
-              (818) 554-3033
-            </a>
-            <a 
-              href="tel:7027553316" 
-              className="inline-flex items-center px-8 py-3 text-base font-medium text-black bg-white hover:bg-gray-100 transition-colors duration-300"
-            >
-              (702) 755-3316
-            </a>
-          </div>
-        </div>
+        </ul>
       </div>
-    </div>
-  );
-};
 
-export default AboutUs;
+      <PageContact
+        title="Need a repair scheduled?"
+        description="Call either line or send the details. We'll tell you what it takes to fix it."
+      />
+    </main>
+  );
+}

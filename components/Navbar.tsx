@@ -1,594 +1,352 @@
 "use client";
 
-import { Transition, Menu } from '@headlessui/react';
-import { 
-  Menu as MenuIcon, 
-  X,
-  Home,
-  Users,
-  Wrench,
-  Star,
-  Image as ImageIcon,
-  PhoneCall,
-  ChevronDown,
-  Home as HomeIcon,
-  Utensils,
-  Droplets,
-  Box,
-  Paintbrush2,
-  Hammer,
-  PaintBucket,
-  Building,
-  Building2,
-  AlertTriangle,
-  MapPin,
-  Phone,
-  Sparkles,
-} from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { type FC } from 'react';
-import React, { useEffect, useState } from 'react';
+import { Menu, MenuItem, HoveredLink } from "@/components/ui/navbar-menu";
+import {
+  Navbar as ResizableNavbar,
+  NavBody,
+  MobileNav,
+  MobileNavHeader,
+  NavbarButton,
+} from "@/components/ui/resizable-navbar";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import BrandMark from "@/components/BrandMark";
+import { siteConfig } from "@/lib/seo";
+import { cn } from "@/lib/utils";
+import { ChevronDown, Menu as MenuIcon, Phone, X } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState, type FC } from "react";
 
-const aboutUsOptions = [
-  { name: 'Our Company Mission', href: '/pages/about-us/mission', icon: Users, category: 'about' },
-  { name: 'Why Use Us', href: '/pages/about-us/why-use-us', icon: Star, category: 'about' },
+const aboutLinks = [
+  { name: "About TGA Handyman", href: "/pages/about-us" },
+  { name: "Our Mission", href: "/pages/about-us/mission" },
+  { name: "Why Use Us", href: "/pages/about-us/why-use-us" },
 ];
 
-const serviceOptions = [
-  // Home & Interior Services
-  { name: 'Home Improve Services', href: '/pages/services/home-improve', icon: HomeIcon, category: 'interior' },
-  { name: 'Interior Services', href: '/pages/services/interior', icon: PaintBucket, category: 'interior' },
-  { name: 'Drywall Repairs', href: '/pages/services/drywall', icon: Paintbrush2, category: 'interior' },
-  { name: 'Handyman Services', href: '/pages/services/handyman', icon: Wrench, category: 'interior' },
-  { name: 'Clean Up Services', href: '/pages/services/clean-up', icon: Sparkles, category: 'interior' },
-  
-  // Kitchen & Bathroom
-  { name: 'Kitchen Repairs', href: '/pages/services/kitchen-repairs', icon: Utensils, category: 'kitchen' },
-  { name: 'Kitchen Cabinets', href: '/pages/services/kitchen-cabinets', icon: Box, category: 'kitchen' },
-  { name: 'Bathroom', href: '/pages/services/bathroom', icon: Droplets, category: 'bathroom' },
-  { name: 'Bathroom Repairs', href: '/pages/services/bathroom-repairs', icon: Droplets, category: 'bathroom' },
-  
-  // Construction & Exterior
-  { name: 'Construction Services', href: '/pages/services/construction', icon: Building2, category: 'construction' },
-  { name: 'Exterior Services', href: '/pages/services/exterior', icon: Building, category: 'construction' },
-  { name: 'Demolitions', href: '/pages/services/demolitions', icon: Hammer, category: 'construction' },
-  
-  // Additional Services
-  { name: 'Emergency Services', href: '/pages/services/emergency', icon: AlertTriangle, category: 'additional' },
-  { name: 'Service Areas', href: '/pages/services/areas', icon: MapPin, category: 'additional' }
+const serviceLinks = [
+  { name: "Handyman Services", href: "/pages/services/handyman" },
+  { name: "Electrical & Lighting", href: "/pages/services/home-improve" },
+  { name: "Plumbing & Leaks", href: "/pages/services/bathroom-repairs" },
+  { name: "Fixture Installs", href: "/pages/services/bathroom" },
+  { name: "Kitchen Repairs", href: "/pages/services/kitchen-repairs" },
+  { name: "Cabinet Repairs", href: "/pages/services/kitchen-cabinets" },
+  { name: "Drywall & Paint", href: "/pages/services/drywall" },
+  { name: "Interior Repairs", href: "/pages/services/interior" },
+  { name: "Doors & Exterior", href: "/pages/services/exterior" },
+  { name: "Cleanup & Punch-list", href: "/pages/services/clean-up" },
+  { name: "Selective Removal", href: "/pages/services/demolitions" },
+  { name: "Small Repairs", href: "/pages/services/construction" },
+  { name: "Emergency Service", href: "/pages/services/emergency" },
+  { name: "Service Areas", href: "/pages/services/areas" },
 ];
 
-type NavigationItem = {
-  name: string;
-  shortName?: string;
-  href: string;
-  icon: React.ElementType;
-  isDropdown?: boolean;
-};
+const dropdownLinkClass =
+  "block rounded-sm px-3 py-2.5 font-body text-sm font-medium tracking-wide text-brand-navy transition-all duration-200 hover:translate-x-0.5 hover:bg-brand-mist hover:text-brand-green";
 
-const navigation: NavigationItem[] = [
-  { name: 'Home', href: '/', icon: Home },
-  { name: 'About Us', shortName: 'About', href: '#', icon: Users, isDropdown: true },
-  { name: 'Services', href: '#', icon: Wrench, isDropdown: true },
-  { name: 'Reviews', href: '/pages/reviews', icon: Star },
-  { name: 'Gallery', href: '/pages/gallery', icon: ImageIcon },
-  { name: 'Contact Us', shortName: 'Contact', href: '/pages/contact-us', icon: PhoneCall },
+const links = [
+  { name: "Home", href: "/" },
+  { name: "Reviews", href: "/pages/reviews" },
+  { name: "Gallery", href: "/pages/gallery" },
+  { name: "Contact", href: "/pages/contact-us" },
 ];
+
+function isActive(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+type MenuKey = "about" | "services";
 
 const Navbar: FC = () => {
   const pathname = usePathname();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [activeMobileDropdown, setActiveMobileDropdown] = useState<string | null>(null);
-  const [menuPathname, setMenuPathname] = useState(pathname);
-
-  // Reset mobile menu when the route changes (React-recommended render adjustment)
-  if (pathname !== menuPathname) {
-    setMenuPathname(pathname);
-    setMobileMenuOpen(false);
-    setActiveMobileDropdown(null);
-  }
+  const isHome = pathname === "/";
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState<string | null>(null);
+  const [openMenu, setOpenMenu] = useState<MenuKey | null>(null);
+  const [scrolled, setScrolled] = useState(!isHome);
+  const primaryPhone = siteConfig.phones[0];
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    setOpen(false);
+    setOpenMenu(null);
+    setActive(null);
+  }, [pathname]);
 
   useEffect(() => {
-    if (!mobileMenuOpen) return;
-
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setMobileMenuOpen(false);
-    };
-    window.addEventListener('keydown', onKeyDown);
-
-    return () => {
-      document.body.style.overflow = originalOverflow;
-      window.removeEventListener('keydown', onKeyDown);
-    };
-  }, [mobileMenuOpen]);
-
-  const isCurrentPath = (path: string): boolean => pathname === path;
-  
-  const toggleMobileDropdown = (name: string) => {
-    if (activeMobileDropdown === name) {
-      setActiveMobileDropdown(null);
-    } else {
-      setActiveMobileDropdown(name);
+    if (!isHome) {
+      setScrolled(true);
+      return;
     }
+
+    const onScroll = () => setScrolled(window.scrollY > 48);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isHome]);
+
+  const light = isHome && !scrolled && !open;
+  const close = () => {
+    setOpen(false);
+    setOpenMenu(null);
   };
 
-  const closeMobileMenu = () => {
-    setMobileMenuOpen(false);
-    setActiveMobileDropdown(null);
+  const toggleMenu = (key: MenuKey) => {
+    setOpenMenu((current) => (current === key ? null : key));
   };
+
+  const aboutOpen = openMenu === "about";
+  const servicesOpen = openMenu === "services";
+
+  const navLinkClass = (href: string) =>
+    cn(
+      "relative z-20 px-3 py-2 font-body text-sm font-medium transition-colors",
+      light
+        ? isActive(pathname, href)
+          ? "text-white"
+          : "text-white/80 hover:text-white"
+        : isActive(pathname, href)
+          ? "text-brand-green"
+          : "text-brand-navy hover:text-brand-green"
+    );
 
   return (
-    <div className={`sticky top-0 z-50 w-full ${scrolled ? 'shadow-lg shadow-black/10' : ''} transition-[box-shadow] duration-300`}>
-      {/* Top Contact Bar */}
-      <div className="hidden lg:block bg-white text-black py-1.5 border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-end items-center gap-6">
-            <a href="tel:8185543033" className="flex items-center gap-2 text-sm hover:text-green-400 transition-colors">
-              <Phone className="h-3.5 w-3.5" />
-              <span>(818) 554-3033</span>
-            </a>
-            <a href="tel:7027553316" className="flex items-center gap-2 text-sm hover:text-green-400 transition-colors">
-              <Phone className="h-3.5 w-3.5" />
-              <span>(702) 755-3316</span>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Navbar */}
-      <div className="bg-gray-900/95 backdrop-blur-md border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16 lg:h-20">
-            {/* Logo */}
-            <div className="flex-shrink-0 flex items-center">
-              <Link href="/" className="flex items-center" onClick={closeMobileMenu}>
-                <Image
-                  src="/logo.webp"
-                  alt="TGA Handyman Logo"
-                  width={180}
-                  height={56}
-                  priority
-                  className={`w-auto transition-all duration-300 ${scrolled ? 'h-10 lg:h-12' : 'h-12 lg:h-14'}`}
-                />
-              </Link>
-            </div>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
-              {navigation.map((item) => {
-                // About Dropdown
-                if (item.name === 'About Us') {
-                  return (
-                    <Menu as="div" className="relative" key={item.name}>
-                      {({ open }) => (
-                        <>
-                          <Menu.Button
-                            className={`
-                              flex items-center gap-1.5 px-3 lg:px-4 py-2 rounded-md
-                              text-sm font-medium transition-all relative
-                              group hover:bg-gray-800
-                              ${open ? 'text-green-400' : 'text-gray-300'}
-                            `}
-                          >
-                            <item.icon className="h-5 w-5 flex-shrink-0" />
-                            <span>{item.name}</span>
-                            <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180 text-green-400' : ''}`} />
-                            <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-green-500 transform scale-x-0 transition-transform duration-300 ${open ? 'scale-x-100' : 'group-hover:scale-x-100'}`} />
-                          </Menu.Button>
-
-                          <Transition
-                            enter="transition ease-out duration-200"
-                            enterFrom="opacity-0 translate-y-1"
-                            enterTo="opacity-100 translate-y-0"
-                            leave="transition ease-in duration-150"
-                            leaveFrom="opacity-100 translate-y-0"
-                            leaveTo="opacity-0 translate-y-1"
-                          >
-                            <Menu.Items className="absolute right-0 mt-1 w-64 origin-top-right rounded-lg bg-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none divide-y divide-gray-800">
-                              {aboutUsOptions.map((option) => (
-                                <Menu.Item key={option.name}>
-                                  {({ active }) => (
-                                    <Link
-                                      href={option.href}
-                                      className={`
-                                        flex items-center gap-3 px-4 py-3 text-sm border-l-2
-                                        ${active ? 'bg-gray-800 text-green-400 border-l-green-500' : 'text-gray-300 border-l-transparent'}
-                                      `}
-                                    >
-                                      <option.icon className="h-5 w-5 flex-shrink-0" />
-                                      <span>{option.name}</span>
-                                    </Link>
-                                  )}
-                                </Menu.Item>
-                              ))}
-                            </Menu.Items>
-                          </Transition>
-                        </>
-                      )}
-                    </Menu>
-                  );
-                }
-
-                // Services Dropdown
-                if (item.name === 'Services') {
-                  return (
-                    <Menu as="div" className="relative" key={item.name}>
-                      {({ open }) => (
-                        <>
-                          <Menu.Button
-                            className={`
-                              flex items-center gap-1.5 px-3 lg:px-4 py-2 rounded-md
-                              text-sm font-medium transition-all relative
-                              group hover:bg-gray-800
-                              ${open ? 'text-green-400' : 'text-gray-300'}
-                            `}
-                          >
-                            <item.icon className="h-5 w-5 flex-shrink-0" />
-                            <span>{item.name}</span>
-                            <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180 text-green-400' : ''}`} />
-                            <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-green-500 transform scale-x-0 transition-transform duration-300 ${open ? 'scale-x-100' : 'group-hover:scale-x-100'}`} />
-                          </Menu.Button>
-
-                          <Transition
-                            enter="transition ease-out duration-200"
-                            enterFrom="opacity-0 translate-y-1"
-                            enterTo="opacity-100 translate-y-0"
-                            leave="transition ease-in duration-150"
-                            leaveFrom="opacity-100 translate-y-0"
-                            leaveTo="opacity-0 translate-y-1"
-                          >
-                            <Menu.Items className="absolute right-0 mt-1 w-72 origin-top-right rounded-lg bg-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                              {/* Interior Services */}
-                              <div className="p-2">
-                                <div className="px-3 py-1.5 text-sm font-semibold text-green-400 uppercase tracking-wide">
-                                  Home & Interior
-                                </div>
-                                {serviceOptions
-                                  .filter(option => option.category === 'interior')
-                                  .map((option) => (
-                                    <Menu.Item key={option.name}>
-                                      {({ active }) => (
-                                        <Link
-                                          href={option.href}
-                                          className={`
-                                            flex items-center gap-3 px-3 py-2 text-sm rounded-md
-                                            ${active ? 'bg-gray-800 text-green-400' : 'text-gray-300'}
-                                          `}
-                                        >
-                                          <option.icon className="h-5 w-5 flex-shrink-0" />
-                                          <span>{option.name}</span>
-                                        </Link>
-                                      )}
-                                    </Menu.Item>
-                                  ))}
-                              </div>
-
-                              <div className="border-t border-gray-800" />
-
-                              {/* Kitchen & Bathroom */}
-                              <div className="p-2">
-                                <div className="px-3 py-1.5 text-sm font-semibold text-green-400 uppercase tracking-wide">
-                                  Kitchen & Bathroom
-                                </div>
-                                {serviceOptions
-                                  .filter(option => option.category === 'kitchen' || option.category === 'bathroom')
-                                  .map((option) => (
-                                    <Menu.Item key={option.name}>
-                                      {({ active }) => (
-                                        <Link
-                                          href={option.href}
-                                          className={`
-                                            flex items-center gap-3 px-3 py-2 text-sm rounded-md
-                                            ${active ? 'bg-gray-800 text-green-400' : 'text-gray-300'}
-                                          `}
-                                        >
-                                          <option.icon className="h-5 w-5 flex-shrink-0" />
-                                          <span>{option.name}</span>
-                                        </Link>
-                                      )}
-                                    </Menu.Item>
-                                  ))}
-                              </div>
-
-                              <div className="border-t border-gray-800" />
-
-                              {/* Construction & Additional */}
-                              <div className="p-2">
-                                <div className="px-3 py-1.5 text-sm font-semibold text-green-400 uppercase tracking-wide">
-                                  Construction & More
-                                </div>
-                                {serviceOptions
-                                  .filter(option => option.category === 'construction' || option.category === 'additional')
-                                  .map((option) => (
-                                    <Menu.Item key={option.name}>
-                                      {({ active }) => (
-                                        <Link
-                                          href={option.href}
-                                          className={`
-                                            flex items-center gap-3 px-3 py-2 text-sm rounded-md
-                                            ${active ? 'bg-gray-800 text-green-400' : 'text-gray-300'}
-                                          `}
-                                        >
-                                          <option.icon className="h-5 w-5 flex-shrink-0" />
-                                          <span>{option.name}</span>
-                                        </Link>
-                                      )}
-                                    </Menu.Item>
-                                  ))}
-                              </div>
-                            </Menu.Items>
-                          </Transition>
-                        </>
-                      )}
-                    </Menu>
-                  );
-                }
-
-                // Standard Navigation Items
-                const isExternalLink = item.href.startsWith('http');
-                const LinkComponent = isExternalLink ? 
-                  ({ children, className }: { children: React.ReactNode, className: string }) => (
-                    <a href={item.href} target="_blank" rel="noopener noreferrer" className={className}>
-                      {children}
-                    </a>
-                  ) : 
-                  ({ children, className }: { children: React.ReactNode, className: string }) => (
-                    <Link href={item.href} className={className}>
-                      {children}
-                    </Link>
-                  );
-
-                return (
-                  <LinkComponent
-                    key={item.name}
-                    className={`
-                      flex items-center gap-1.5 px-3 lg:px-4 py-2 rounded-md
-                      text-sm font-medium transition-all duration-200 relative
-                      group ${isCurrentPath(item.href)
-                        ? 'bg-green-500 text-white'
-                        : 'text-gray-300 hover:bg-gray-800 hover:text-green-400'
-                      }
-                    `}
-                  >
-                    <item.icon className="h-5 w-5 flex-shrink-0" />
-                    <span>{item.name}</span>
-                    {!isCurrentPath(item.href) && (
-                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-green-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
-                    )}
-                  </LinkComponent>
-                );
-              })}
-
-              {/* Contact Button - Special Treatment */}
-              <Link
-                href="/pages/contact-us"
-                className="hidden lg:flex items-center gap-1.5 px-5 py-2.5 ml-2
-                  text-sm font-medium bg-green-500 text-white rounded-md
-                  transition-all duration-200 hover:bg-green-600 hover:shadow-lg hover:shadow-green-500/20
-                  transform hover:-translate-y-0.5"
-              >
-                <PhoneCall className="h-4 w-4 flex-shrink-0" />
-                <span>Get a Quote</span>
-              </Link>
-            </nav>
-
-            {/* Mobile Menu Button */}
-            <div className="md:hidden flex items-center">
-              <button
-                type="button"
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-green-400 hover:bg-gray-800 focus:outline-none"
-                aria-expanded={mobileMenuOpen}
-                aria-controls="mobile-menu"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                <span className="sr-only">{mobileMenuOpen ? 'Close menu' : 'Open menu'}</span>
-                {mobileMenuOpen ? (
-                  <X className="block h-6 w-6" />
-                ) : (
-                  <MenuIcon className="block h-6 w-6" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu - fixed overlay so expanded items stay reachable on short screens */}
-      <div
-        className={`md:hidden fixed inset-0 top-16 z-40 ${
-          mobileMenuOpen ? 'pointer-events-auto' : 'pointer-events-none invisible'
-        }`}
-        aria-hidden={!mobileMenuOpen}
-      >
-        <button
-          type="button"
-          tabIndex={mobileMenuOpen ? 0 : -1}
-          aria-label="Close menu"
-          className={`absolute inset-0 bg-black/50 transition-opacity duration-200 ${mobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
-          onClick={closeMobileMenu}
-        />
-        <nav
-          id="mobile-menu"
-          className={`absolute top-0 left-0 right-0 max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain bg-gray-900 border-b border-gray-800 shadow-xl transition-all duration-200 ease-out ${
-            mobileMenuOpen
-              ? 'translate-y-0 opacity-100'
-              : '-translate-y-2 opacity-0'
-          }`}
+    <>
+      <ResizableNavbar className="pointer-events-none" forceVisible={!isHome || scrolled}>
+        <NavBody
+          className={cn(
+            "pointer-events-auto gap-4 px-5 py-2.5",
+            !scrolled && isHome && "bg-transparent"
+          )}
         >
-          <div className="divide-y divide-gray-800">
-            {navigation.map((item) => {
-              // About Us Mobile Dropdown
-              if (item.name === 'About Us') {
-                const aboutOpen = activeMobileDropdown === 'about';
-                return (
-                  <div key={item.name} className="py-1.5">
-                    <button
-                      type="button"
-                      onClick={() => toggleMobileDropdown('about')}
-                      aria-expanded={aboutOpen}
-                      className="flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium text-gray-300"
-                    >
-                      <div className="flex items-center gap-3">
-                        <item.icon className="h-5 w-5 flex-shrink-0 text-green-400" />
-                        <span>About Us</span>
-                      </div>
-                      <ChevronDown className={`w-5 h-5 text-green-400 transition-transform duration-200 ${aboutOpen ? 'rotate-180' : ''}`} />
-                    </button>
-                    <div
-                      className={`grid transition-[grid-template-rows] duration-200 ease-out ${
-                        aboutOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
-                      }`}
-                    >
-                      <div className="overflow-hidden" inert={aboutOpen ? undefined : true} aria-hidden={!aboutOpen}>
-                        <div className="bg-gray-800/50">
-                          {aboutUsOptions.map((option) => (
-                            <Link
-                              key={option.name}
-                              href={option.href}
-                              tabIndex={aboutOpen ? undefined : -1}
-                              className="flex items-center gap-3 w-full px-4 py-3 pl-10 text-sm text-gray-300 hover:bg-gray-800 hover:text-green-400"
-                              onClick={closeMobileMenu}
-                            >
-                              <option.icon className="h-4 w-4 flex-shrink-0" />
-                              <span>{option.name}</span>
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
+          <Link href="/" className="relative z-20 shrink-0" onClick={close}>
+            <BrandMark priority />
+          </Link>
 
-              // Services Mobile Dropdown
-              if (item.name === 'Services') {
-                const servicesOpen = activeMobileDropdown === 'services';
-                return (
-                  <div key={item.name} className="py-1.5">
-                    <button
-                      type="button"
-                      onClick={() => toggleMobileDropdown('services')}
-                      aria-expanded={servicesOpen}
-                      className="flex items-center justify-between w-full px-4 py-2.5 text-sm font-medium text-gray-300"
-                    >
-                      <div className="flex items-center gap-3">
-                        <item.icon className="h-5 w-5 flex-shrink-0 text-green-400" />
-                        <span>Services</span>
-                      </div>
-                      <ChevronDown className={`w-5 h-5 text-green-400 transition-transform duration-200 ${servicesOpen ? 'rotate-180' : ''}`} />
-                    </button>
-                    <div
-                      className={`grid transition-[grid-template-rows] duration-200 ease-out ${
-                        servicesOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
-                      }`}
-                    >
-                      <div className="overflow-hidden" inert={servicesOpen ? undefined : true} aria-hidden={!servicesOpen}>
-                        <div className="bg-gray-800/50 pb-2">
-                          {['interior', 'kitchen', 'bathroom', 'construction', 'additional'].map((category) => {
-                            const categoryServices = serviceOptions.filter(opt => opt.category === category);
-                            if (categoryServices.length === 0) return null;
-                            
-                            return (
-                              <div key={category}>
-                                <div className="px-10 pt-3 pb-1 text-sm font-semibold text-green-400 uppercase">
-                                  {category === 'interior' ? 'Home & Interior' : 
-                                   category === 'kitchen' ? 'Kitchen' :
-                                   category === 'bathroom' ? 'Bathroom' :
-                                   category === 'construction' ? 'Construction' : 'Additional Services'}
-                                </div>
-                                {categoryServices.map((service) => (
-                                  <Link
-                                    key={service.name}
-                                    href={service.href}
-                                    tabIndex={servicesOpen ? undefined : -1}
-                                    className="flex items-center gap-3 w-full px-4 py-2.5 pl-10 text-sm text-gray-300 hover:bg-gray-800 hover:text-green-400"
-                                    onClick={closeMobileMenu}
-                                  >
-                                    <service.icon className="h-4 w-4 flex-shrink-0" />
-                                    <span>{service.name}</span>
-                                  </Link>
-                                ))}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
+          <Menu
+            setActive={setActive}
+            className="absolute inset-0 hidden items-center justify-center gap-1 bg-transparent lg:flex"
+          >
+            <Link href="/" className={navLinkClass("/")}>
+              Home
+            </Link>
 
-              // Standard Mobile Links
-              const isExternalLink = item.href.startsWith('http');
-              
-              if (isExternalLink) {
-                return (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`
-                      flex items-center gap-3 px-4 py-3.5 text-sm font-medium
-                      ${isCurrentPath(item.href) ? 'bg-green-500 text-white' : 'text-gray-300'}
-                    `}
-                    onClick={closeMobileMenu}
-                  >
-                    <item.icon className="h-5 w-5 flex-shrink-0" />
-                    <span>{item.name}</span>
-                  </a>
-                );
-              }
-              
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`
-                    flex items-center gap-3 px-4 py-3.5 text-sm font-medium
-                    ${isCurrentPath(item.href) ? 'bg-green-500 text-white' : 'text-gray-300'}
-                  `}
-                  onClick={closeMobileMenu}
-                >
-                  <item.icon className="h-5 w-5 flex-shrink-0" />
-                  <span>{item.name}</span>
-                </Link>
-              );
-            })}
-            
-            {/* Mobile Contact Info */}
-            <div className="py-3 px-4 bg-gray-800/50">
-              <p className="text-sm font-semibold text-green-400 uppercase mb-2">Call Us</p>
-              <div className="space-y-2">
-                <a href="tel:8185543033" className="flex items-center gap-3 text-sm text-gray-300">
-                  <Phone className="h-4 w-4 text-green-400" />
-                  <span>(818) 554-3033</span>
-                </a>
-                <a href="tel:7027553316" className="flex items-center gap-3 text-sm text-gray-300">
-                  <Phone className="h-4 w-4 text-green-400" />
-                  <span>(702) 755-3316</span>
-                </a>
+            <MenuItem
+              setActive={setActive}
+              active={active}
+              item="About"
+              className={cn(
+                "cursor-pointer px-3 py-2 font-body text-sm font-medium transition-colors",
+                light
+                  ? "text-white/80 hover:text-white"
+                  : pathname.startsWith("/pages/about-us")
+                    ? "text-brand-green"
+                    : "text-brand-navy hover:text-brand-green"
+              )}
+            >
+              <div className="flex min-w-[14rem] flex-col">
+                {aboutLinks.map((item) => (
+                  <HoveredLink key={item.href} href={item.href} className={dropdownLinkClass}>
+                    {item.name}
+                  </HoveredLink>
+                ))}
               </div>
-            </div>
+            </MenuItem>
+
+            <MenuItem
+              setActive={setActive}
+              active={active}
+              item="Services"
+              className={cn(
+                "cursor-pointer px-3 py-2 font-body text-sm font-medium transition-colors",
+                light
+                  ? "text-white/80 hover:text-white"
+                  : pathname.startsWith("/pages/services")
+                    ? "text-brand-green"
+                    : "text-brand-navy hover:text-brand-green"
+              )}
+            >
+              <div className="grid min-w-[18rem] grid-cols-1 gap-0.5 overflow-hidden sm:min-w-[28rem] sm:grid-cols-2">
+                {serviceLinks.map((item) => (
+                  <HoveredLink key={item.href} href={item.href} className={dropdownLinkClass}>
+                    {item.name}
+                  </HoveredLink>
+                ))}
+              </div>
+            </MenuItem>
+
+            {links.slice(1).map((item) => (
+              <Link key={item.href} href={item.href} className={navLinkClass(item.href)}>
+                {item.name}
+              </Link>
+            ))}
+          </Menu>
+
+          <div className="relative z-20 flex items-center gap-3">
+            <a
+              href={`tel:${primaryPhone.tel}`}
+              className={cn(
+                "hidden items-center gap-1.5 font-body text-sm xl:inline-flex",
+                light ? "text-white/90 hover:text-white" : "text-brand-navy hover:text-brand-green"
+              )}
+            >
+              <Phone className="h-4 w-4" aria-hidden />
+              {primaryPhone.display}
+            </a>
+            <NavbarButton
+              as={Link}
+              href="/pages/contact-us"
+              variant="dark"
+              className="rounded-sm bg-brand-green px-4 py-2.5 font-body text-sm font-semibold text-white shadow-none hover:bg-brand-green-bright"
+            >
+              Book Now
+            </NavbarButton>
           </div>
-        </nav>
-      </div>
-    </div>
+        </NavBody>
+
+        <MobileNav
+          className={cn(
+            "pointer-events-auto",
+            (!scrolled && isHome && !open) || open
+              ? open
+                ? "border border-black/5 bg-white/95"
+                : "bg-transparent"
+              : undefined
+          )}
+        >
+          <MobileNavHeader className="px-3">
+            <Link href="/" onClick={close}>
+              <BrandMark priority className="h-9" />
+            </Link>
+
+            <button
+              type="button"
+              className={cn(
+                "inline-flex h-10 w-10 items-center justify-center",
+                light ? "text-white" : "text-brand-navy"
+              )}
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              aria-controls="mobile-nav-sheet"
+              onClick={() => setOpen((current) => !current)}
+            >
+              {open ? <X className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
+            </button>
+
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetContent
+                id="mobile-nav-sheet"
+                side="right"
+                className="w-[min(100%,22rem)] border-l border-black/5 bg-white p-0"
+              >
+                <SheetHeader className="border-b border-black/5 px-5 py-4">
+                  <SheetTitle className="font-display text-lg uppercase tracking-wide text-brand-ink">
+                    Menu
+                  </SheetTitle>
+                </SheetHeader>
+
+                <nav className="flex max-h-[calc(100dvh-5rem)] flex-col gap-1 overflow-y-auto px-3 py-4">
+                  <Link
+                    href="/"
+                    onClick={close}
+                    className={cn(
+                      "rounded-md px-3 py-3 font-body text-base font-medium",
+                      isActive(pathname, "/") ? "text-brand-green" : "text-brand-navy"
+                    )}
+                  >
+                    Home
+                  </Link>
+
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => toggleMenu("about")}
+                      aria-expanded={aboutOpen}
+                      className="flex w-full items-center justify-between rounded-md px-3 py-3 font-body text-base font-medium text-brand-navy"
+                    >
+                      About
+                      <ChevronDown className={cn("h-5 w-5 transition", aboutOpen && "rotate-180")} />
+                    </button>
+                    {aboutOpen && (
+                      <div className="mb-1 ml-3 space-y-0.5 border-l-2 border-brand-green/40 pl-2">
+                        {aboutLinks.map((item) => (
+                          <Link key={item.href} href={item.href} onClick={close} className={dropdownLinkClass}>
+                            {item.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => toggleMenu("services")}
+                      aria-expanded={servicesOpen}
+                      className="flex w-full items-center justify-between rounded-md px-3 py-3 font-body text-base font-medium text-brand-navy"
+                    >
+                      Services
+                      <ChevronDown
+                        className={cn("h-5 w-5 transition", servicesOpen && "rotate-180")}
+                      />
+                    </button>
+                    {servicesOpen && (
+                      <div className="mb-1 ml-3 space-y-0.5 overflow-hidden border-l-2 border-brand-green/40 pl-2">
+                        {serviceLinks.map((item) => (
+                          <Link key={item.href} href={item.href} onClick={close} className={dropdownLinkClass}>
+                            {item.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {links.slice(1).map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={close}
+                      className={cn(
+                        "rounded-md px-3 py-3 font-body text-base font-medium",
+                        isActive(pathname, item.href) ? "text-brand-green" : "text-brand-navy"
+                      )}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+
+                  <div className="mt-3 space-y-3 border-t border-black/5 px-2 pt-4">
+                    {siteConfig.phones.map((phone) => (
+                      <a
+                        key={phone.tel}
+                        href={`tel:${phone.tel}`}
+                        className="flex items-center gap-2 font-body text-sm font-medium text-brand-navy"
+                      >
+                        <Phone className="h-4 w-4 text-brand-green" />
+                        {phone.display}
+                      </a>
+                    ))}
+                    <Link
+                      href="/pages/contact-us"
+                      onClick={close}
+                      className="flex w-full items-center justify-center bg-brand-green px-5 py-3 font-body text-sm font-semibold text-white"
+                    >
+                      Book Now
+                    </Link>
+                  </div>
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </MobileNavHeader>
+        </MobileNav>
+      </ResizableNavbar>
+
+      {!isHome && <div className="h-[4.75rem]" aria-hidden />}
+    </>
   );
 };
 

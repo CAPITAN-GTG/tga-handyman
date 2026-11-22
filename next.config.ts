@@ -4,6 +4,7 @@ import path from "path";
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
   images: {
     formats: ["image/avif", "image/webp"],
   },
@@ -11,7 +12,8 @@ const nextConfig: NextConfig = {
     root: path.join(__dirname),
   },
   experimental: {
-    optimizePackageImports: ["lucide-react"],
+    optimizePackageImports: ["lucide-react", "motion"],
+    agentUpgrade: "security",
   },
 };
 
